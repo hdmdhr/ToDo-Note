@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Category" representedClassName=".Category" syncable="YES" codeGenerationType="class">
+        <attribute name="colorHex" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="thingsToDo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ThingsToDo" inverseName="parentCategory" inverseEntity="ThingsToDo" syncable="YES"/>
+    </entity>
+    <entity name="ThingsToDo" representedClassName=".ThingsToDo" syncable="YES" codeGenerationType="class">
+        <attribute name="done" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="parentCategory" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="thingsToDo" inverseEntity="Category" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Category" positionX="-2042.2265625" positionY="-1358.875" width="128" height="105"/>
+        <element name="ThingsToDo" positionX="-2280.75390625" positionY="-1363.71875" width="128" height="90"/>
+    </elements>
+</model>
