@@ -13,24 +13,39 @@ import ChameleonFramework
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var navBarBtn: UIBarButtonItem!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     var categories: [Category] = []
-    var cateNumbers = 0
     let pallet: [UIColor] = [FlatWatermelon(),FlatRed(),FlatOrange(),FlatYellow(),FlatGreen(),FlatLime(),FlatSkyBlue(),FlatMagenta(),FlatPurple()]
+    var longPressEnabled = false {
+        didSet{
+            if longPressEnabled {
+                navBarBtn.title = "Done"
+            } else {
+                navBarBtn.title = "Edit"
+            }
+            collectionView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navBarBtn.title = "Edit"
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
+        collectionView.addGestureRecognizer(longPress)
  
         loadData()
         
         if categories.isEmpty {
-            let addCategory = Category(context: context)
-            addCategory.name = "Add"
-            addCategory.dateCreated = Date()
-            addCategory.colorHex = FlatWatermelon().hexValue()
-            categories.append(addCategory)
+            let add = Category(context: context)
+            add.name = "+"
+            add.dateCreated = Date()
+            add.colorHex = FlatWatermelon().hexValue()
+            categories.append(add)
         }
         
         
@@ -40,7 +55,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 //        layout.sectionInset = UIEdgeInsets(top: 10 , left: 0, bottom: 10, right: 0)
         layout.minimumInteritemSpacing = 2
         layout.minimumLineSpacing = 4
-        layout.itemSize = CGSize(width: collectionView.bounds.width/2 - 2, height: collectionView.bounds.width/2 - 2)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
         layout.sectionInsetReference = .fromSafeArea
     }
 
@@ -59,17 +74,38 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         cell.roundBtn.setTitle(categories[indexPath.item].name, for: .normal)
         cell.roundBtn.backgroundColor = HexColor(categories[indexPath.item].colorHex ?? FlatWatermelon().hexValue(), 0.85)
         
+        if longPressEnabled {
+            cell.startAnimate()
+        } else {
+            cell.stopAnimate()
+        }
+        
         return cell
     }
     
     // MARK: - Delegate Methods
     
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     
-    // MARK: - Add new categories
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        print("Start index: \(sourceIndexPath.item)")
+        print("End index: \(destinationIndexPath.item)")
+        
+        let temp = categories[sourceIndexPath.item]
+        categories[sourceIndexPath.item] = categories[destinationIndexPath.item]
+        categories[destinationIndexPath.item] = temp
+        
+        saveData()
+    }
+    
+    // MARK: - Add/Delete categories
     
     @IBAction func addButtonPressed(_ sender: RoundButton) {
-        guard sender.currentTitle! == "Add" else { return }
-        
+        guard sender.currentTitle! == "+" else { return }
+
         var textField = UITextField()
         
         let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
@@ -97,6 +133,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
     }
     
+    @IBAction func deleteBtnPressed(_ sender: UIButton) {
+        let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
+        let hitIndex = collectionView.indexPathForItem(at: hitPoint)
+        
+        context.delete(categories[hitIndex!.row])
+        categories.remove(at: hitIndex!.row)
+        saveData()
+    }
+    
+    @IBAction func navBarBtnPressed(_ sender: UIBarButtonItem) {
+        longPressEnabled = !longPressEnabled
+    }
     // MARK: - Data manipulation
     
     func saveData() {
@@ -104,8 +152,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             do {
                 try context.save()
             } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                fatalError("unable to save changes due to error: \(error)")
             }
             collectionView.reloadData()
         }
@@ -123,3 +170,29 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
 }
 
+// MARK: - Gesture handling
+
+extension ViewController {
+    
+    @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
+        
+//        let cells = collectionView.visibleCells as! [CollectionViewCell]
+
+        switch gesture.state {
+        case .began:
+            guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { break }
+            
+            collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+
+        case .ended:
+            collectionView.endInteractiveMovement()
+            longPressEnabled = true
+
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+    
+}

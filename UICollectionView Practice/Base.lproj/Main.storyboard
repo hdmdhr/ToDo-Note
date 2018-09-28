@@ -40,20 +40,47 @@
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="2UY-eb-n4F" secondAttribute="height" multiplier="1:1" id="uih-29-VUD"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <state key="normal" title="Add"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="30"/>
+                                                    <state key="normal" title="+">
+                                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </state>
                                                     <connections>
                                                         <action selector="addButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cna-G9-a3J"/>
+                                                    </connections>
+                                                </button>
+                                                <button hidden="YES" opaque="NO" alpha="0.65000000000000002" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pb5-CB-uFB">
+                                                    <rect key="frame" x="127" y="5" width="30" height="30"/>
+                                                    <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="5gS-UE-YXB"/>
+                                                        <constraint firstAttribute="width" constant="30" id="bQE-os-7PA"/>
+                                                    </constraints>
+                                                    <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" backgroundImage="cross"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="15"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="deleteBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u8O-cY-fOo"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="pb5-CB-uFB" firstAttribute="top" secondItem="R0o-S9-yxd" secondAttribute="top" constant="5" id="Azn-ef-zee"/>
                                             <constraint firstItem="2UY-eb-n4F" firstAttribute="centerY" secondItem="R0o-S9-yxd" secondAttribute="centerY" id="H7s-RO-EKR"/>
                                             <constraint firstItem="2UY-eb-n4F" firstAttribute="centerX" secondItem="R0o-S9-yxd" secondAttribute="centerX" id="IcJ-wY-JFL"/>
                                             <constraint firstItem="2UY-eb-n4F" firstAttribute="width" secondItem="R0o-S9-yxd" secondAttribute="height" multiplier="7:8" id="bQY-ez-xeM"/>
+                                            <constraint firstAttribute="trailing" secondItem="pb5-CB-uFB" secondAttribute="trailing" constant="5" id="xoY-VM-hB5"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="deleteBtn" destination="pb5-CB-uFB" id="AZ7-Ra-ubH"/>
                                             <outlet property="roundBtn" destination="2UY-eb-n4F" id="rqc-62-9KD"/>
                                         </connections>
                                     </collectionViewCell>
@@ -74,15 +101,20 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Categories" id="r63-Nc-ho4">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="B4d-J2-rag"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="B4d-J2-rag">
+                            <connections>
+                                <action selector="navBarBtnPressed:" destination="BYZ-38-t0r" id="17b-Hk-BQO"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="J2G-DM-bGw" id="8Cy-WC-krr"/>
+                        <outlet property="navBarBtn" destination="B4d-J2-rag" id="FuP-MI-WwV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1079.2" y="132.68365817091455"/>
+            <point key="canvasLocation" x="1078.2608695652175" y="132.58928571428572"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YI8-pK-l9X">
@@ -106,4 +138,7 @@
             <point key="canvasLocation" x="140" y="132.68365817091455"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="cross" width="100" height="100"/>
+    </resources>
 </document>
