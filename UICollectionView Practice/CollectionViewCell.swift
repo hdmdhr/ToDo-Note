@@ -16,6 +16,21 @@ class CollectionViewCell: UICollectionViewCell {
     
     var isAnimate = false
     
+    override func awakeFromNib() {
+        //        print("cell size: \(bounds.size)")
+    }
+    
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        setNeedsLayout()
+        layoutIfNeeded()
+        let size = contentView.systemLayoutSizeFitting(layoutAttributes.size)
+        var frame = layoutAttributes.frame
+        frame.size.height = size.height
+        layoutAttributes.frame = frame
+        
+        return layoutAttributes
+    }
+    
     func startAnimate() {
         let shakeAnimation = CABasicAnimation(keyPath: "transform.rotation")
         shakeAnimation.duration = 0.15

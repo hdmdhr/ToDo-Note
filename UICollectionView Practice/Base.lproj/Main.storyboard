@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PTQ-BZ-KRg">
-    <device id="retina6_5" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -14,71 +14,84 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="UICollectionView_Practice" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="J2G-DM-bGw">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VZm-80-OvR">
-                                    <size key="itemSize" width="162" height="175"/>
+                                    <size key="itemSize" width="192" height="179"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="R0o-S9-yxd" customClass="CollectionViewCell" customModule="UICollectionView_Practice" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="162" height="175"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="190" height="190"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="162" height="175"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="190" height="190"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2UY-eb-n4F" customClass="RoundButton" customModule="UICollectionView_Practice" customModuleProvider="target">
-                                                    <rect key="frame" x="4.3333333333333286" y="11" width="153.33333333333337" height="153"/>
-                                                    <color key="backgroundColor" red="0.94509803920000002" green="0.76862745099999996" blue="0.058823529409999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z6n-ij-hj5">
+                                                    <rect key="frame" x="0.0" y="0.0" width="190" height="190"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2UY-eb-n4F" customClass="RoundButton" customModule="UICollectionView_Practice" customModuleProvider="target">
+                                                            <rect key="frame" x="12" y="12" width="166" height="166"/>
+                                                            <color key="backgroundColor" red="0.94509803920000002" green="0.76862745099999996" blue="0.058823529409999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" secondItem="2UY-eb-n4F" secondAttribute="height" multiplier="1:1" id="uih-29-VUD"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="30"/>
+                                                            <state key="normal" title="+">
+                                                                <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="addButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cna-G9-a3J"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button hidden="YES" opaque="NO" alpha="0.65000000000000002" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pb5-CB-uFB">
+                                                            <rect key="frame" x="160" y="0.0" width="30" height="30"/>
+                                                            <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="30" id="5gS-UE-YXB"/>
+                                                                <constraint firstAttribute="width" constant="30" id="bQE-os-7PA"/>
+                                                            </constraints>
+                                                            <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <state key="normal" backgroundImage="cross"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                    <integer key="value" value="15"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                                    <real key="value" value="0.5"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="deleteBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u8O-cY-fOo"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="2UY-eb-n4F" secondAttribute="height" multiplier="1:1" id="uih-29-VUD"/>
+                                                        <constraint firstItem="pb5-CB-uFB" firstAttribute="top" secondItem="z6n-ij-hj5" secondAttribute="top" id="9bc-mD-lXC"/>
+                                                        <constraint firstItem="2UY-eb-n4F" firstAttribute="centerY" secondItem="z6n-ij-hj5" secondAttribute="centerY" id="9pT-DN-bgK"/>
+                                                        <constraint firstAttribute="trailing" secondItem="pb5-CB-uFB" secondAttribute="trailing" id="PRH-Qf-qdz"/>
+                                                        <constraint firstItem="2UY-eb-n4F" firstAttribute="centerX" secondItem="z6n-ij-hj5" secondAttribute="centerX" id="SzO-MQ-xWQ"/>
+                                                        <constraint firstItem="2UY-eb-n4F" firstAttribute="width" secondItem="z6n-ij-hj5" secondAttribute="height" multiplier="7:8" id="bsA-a7-Unb"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="30"/>
-                                                    <state key="normal" title="+">
-                                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </state>
-                                                    <connections>
-                                                        <action selector="addButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cna-G9-a3J"/>
-                                                    </connections>
-                                                </button>
-                                                <button hidden="YES" opaque="NO" alpha="0.65000000000000002" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pb5-CB-uFB">
-                                                    <rect key="frame" x="127" y="5" width="30" height="30"/>
-                                                    <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="30" id="5gS-UE-YXB"/>
-                                                        <constraint firstAttribute="width" constant="30" id="bQE-os-7PA"/>
-                                                    </constraints>
-                                                    <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" backgroundImage="cross"/>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                            <integer key="value" value="15"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                            <real key="value" value="0.5"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <action selector="deleteBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u8O-cY-fOo"/>
-                                                    </connections>
-                                                </button>
+                                                </view>
                                             </subviews>
                                         </view>
                                         <constraints>
-                                            <constraint firstItem="pb5-CB-uFB" firstAttribute="top" secondItem="R0o-S9-yxd" secondAttribute="top" constant="5" id="Azn-ef-zee"/>
-                                            <constraint firstItem="2UY-eb-n4F" firstAttribute="centerY" secondItem="R0o-S9-yxd" secondAttribute="centerY" id="H7s-RO-EKR"/>
-                                            <constraint firstItem="2UY-eb-n4F" firstAttribute="centerX" secondItem="R0o-S9-yxd" secondAttribute="centerX" id="IcJ-wY-JFL"/>
-                                            <constraint firstItem="2UY-eb-n4F" firstAttribute="width" secondItem="R0o-S9-yxd" secondAttribute="height" multiplier="7:8" id="bQY-ez-xeM"/>
-                                            <constraint firstAttribute="trailing" secondItem="pb5-CB-uFB" secondAttribute="trailing" constant="5" id="xoY-VM-hB5"/>
+                                            <constraint firstAttribute="trailing" secondItem="z6n-ij-hj5" secondAttribute="trailing" id="DiO-kL-ipc"/>
+                                            <constraint firstItem="z6n-ij-hj5" firstAttribute="leading" secondItem="R0o-S9-yxd" secondAttribute="leading" id="Lob-l4-Xas"/>
+                                            <constraint firstItem="z6n-ij-hj5" firstAttribute="top" secondItem="R0o-S9-yxd" secondAttribute="top" id="NsD-F6-KUJ"/>
+                                            <constraint firstAttribute="bottom" secondItem="z6n-ij-hj5" secondAttribute="bottom" id="uQG-8g-duL"/>
                                         </constraints>
+                                        <size key="customSize" width="190" height="190"/>
                                         <connections>
                                             <outlet property="deleteBtn" destination="pb5-CB-uFB" id="AZ7-Ra-ubH"/>
                                             <outlet property="roundBtn" destination="2UY-eb-n4F" id="rqc-62-9KD"/>
@@ -107,6 +120,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <size key="freeformSize" width="414" height="736"/>
                     <connections>
                         <outlet property="collectionView" destination="J2G-DM-bGw" id="8Cy-WC-krr"/>
                         <outlet property="navBarBtn" destination="B4d-J2-rag" id="FuP-MI-WwV"/>
@@ -114,7 +128,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1078.2608695652175" y="132.58928571428572"/>
+            <point key="canvasLocation" x="1078.2608695652175" y="132.06521739130434"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YI8-pK-l9X">
@@ -122,7 +136,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PTQ-BZ-KRg" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8mF-EU-cdZ">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="20"/>

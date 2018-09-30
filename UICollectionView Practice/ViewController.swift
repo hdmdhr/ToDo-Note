@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import ChameleonFramework
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var navBarBtn: UIBarButtonItem!
@@ -19,44 +19,57 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     var categories: [Category] = []
     let pallet: [UIColor] = [FlatWatermelon(),FlatRed(),FlatOrange(),FlatYellow(),FlatGreen(),FlatLime(),FlatSkyBlue(),FlatMagenta(),FlatPurple()]
+
     var longPressEnabled = false {
         didSet{
+            let cells = collectionView.visibleCells as! [CollectionViewCell]
             if longPressEnabled {
                 navBarBtn.title = "Done"
+                for cell in cells {
+                    cell.startAnimate()
+                }
             } else {
                 navBarBtn.title = "Edit"
+                for cell in cells {
+                    cell.stopAnimate()
+                }
             }
-            collectionView.reloadData()
+//            collectionView.reloadData()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadData()
         navBarBtn.title = "Edit"
         
+        // MARK: Add gestures
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPress)
- 
-        loadData()
         
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
+        collectionView.addGestureRecognizer(panGesture)
+ 
+        // MARK: Add + button data
         if categories.isEmpty {
             let add = Category(context: context)
             add.name = "+"
             add.dateCreated = Date()
-            add.colorHex = FlatWatermelon().hexValue()
+            add.colorHex = FlatWhiteDark().hexValue()
             categories.append(add)
         }
         
         
-        // MARK: - Layouts
-        
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        // MARK: - Set Layouts
+//        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+//        layout.minimumInteritemSpacing = 2
+//        layout.minimumLineSpacing = 4
+//        layout.estimatedItemSize = layout.collectionViewContentSize
 //        layout.sectionInset = UIEdgeInsets(top: 10 , left: 0, bottom: 10, right: 0)
-        layout.minimumInteritemSpacing = 2
-        layout.minimumLineSpacing = 4
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
-        layout.sectionInsetReference = .fromSafeArea
+//        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
+//        layout.sectionInsetReference = .fromSafeArea
+//        print("item size: \(layout.itemSize)")
     }
 
     // MARK: - Datasource methods
@@ -69,6 +82,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
 //        cell.backgroundColor = HexColor("9A9A9A", 0.25)
+        print("cell size: \(cell.bounds.size)")
+        cell.roundBtn.layer.cornerRadius = 0.5 * 7 * (UIScreen.main.bounds.width/2 - 5) / 8
         cell.layer.borderWidth = 1
         cell.layer.borderColor = FlatGray().withAlphaComponent(0.25).cgColor
         cell.roundBtn.setTitle(categories[indexPath.item].name, for: .normal)
@@ -84,6 +99,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     // MARK: - Delegate Methods
+    
+    // MARK: Set the cell size
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
+    }
+    
+    // MARK: Move cells
     
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         return true
@@ -137,24 +160,29 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
         let hitIndex = collectionView.indexPathForItem(at: hitPoint)
         
-        context.delete(categories[hitIndex!.row])
-        categories.remove(at: hitIndex!.row)
-        saveData()
+        if categories[hitIndex!.row].name != "+" {
+            context.delete(categories[hitIndex!.row])
+            categories.remove(at: hitIndex!.row)
+            saveData()
+        }
     }
     
     @IBAction func navBarBtnPressed(_ sender: UIBarButtonItem) {
         longPressEnabled = !longPressEnabled
     }
+    
     // MARK: - Data manipulation
     
     func saveData() {
         if context.hasChanges {
             do {
                 try context.save()
+                print("changes saved")
             } catch {
                 fatalError("unable to save changes due to error: \(error)")
             }
             collectionView.reloadData()
+            print("data reloaded")
         }
     }
     
@@ -176,22 +204,41 @@ extension ViewController {
     
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
         
-//        let cells = collectionView.visibleCells as! [CollectionViewCell]
-
         switch gesture.state {
         case .began:
             guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { break }
-            
+            longPressEnabled = true
+
             collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
 
         case .ended:
             collectionView.endInteractiveMovement()
-            longPressEnabled = true
 
         default:
             collectionView.cancelInteractiveMovement()
+//            return
+        }
+    }
+    
+    @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
+        
+        if longPressEnabled {
+            switch gesture.state {
+            case .began:
+                guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { break }
+                
+                collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+            case .changed:
+                collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+                
+            case .ended:
+                collectionView.endInteractiveMovement()
+                
+            default:
+                collectionView.cancelInteractiveMovement()
+            }
         }
     }
     

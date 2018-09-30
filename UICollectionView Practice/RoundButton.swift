@@ -9,19 +9,17 @@
 import UIKit
 
 @IBDesignable class RoundButton: UIButton {
-
-    @IBInspectable var cornerRadius: CGFloat = 0 {
-        didSet{
-            layer.cornerRadius = cornerRadius
-        }
-    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        layer.cornerRadius = 0.5 * bounds.height
+//        print("button bounds size: \(bounds.size)")
+//        layer.cornerRadius = 0.5 * layer.bounds.width
         layer.masksToBounds = true
 //        clipsToBounds = true
     }
-    
+    override func willMove(toSuperview newSuperview: UIView?) {
+        layer.cornerRadius = 0.5 * layer.bounds.width
+    }
     override var isHighlighted: Bool {
         didSet{
             if isHighlighted { alpha = 0.5 } else { alpha = 1 }
