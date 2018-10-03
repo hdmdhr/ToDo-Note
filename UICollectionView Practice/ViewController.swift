@@ -34,7 +34,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                     cell.stopAnimate()
                 }
             }
-//            collectionView.reloadData()
         }
     }
     
@@ -47,16 +46,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // MARK: Add gestures
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPress)
-        
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
-        collectionView.addGestureRecognizer(panGesture)
- 
+
+//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
+//        collectionView.addGestureRecognizer(panGesture)
+
         // MARK: Add + button data
         if categories.isEmpty {
             let add = Category(context: context)
             add.name = "+"
             add.dateCreated = Date()
             add.colorHex = FlatWhiteDark().hexValue()
+            add.order = 0
             categories.append(add)
         }
         
@@ -82,7 +82,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
 //        cell.backgroundColor = HexColor("9A9A9A", 0.25)
-        print("cell size: \(cell.bounds.size)")
         cell.roundBtn.layer.cornerRadius = 0.5 * 7 * (UIScreen.main.bounds.width/2 - 5) / 8
         cell.layer.borderWidth = 1
         cell.layer.borderColor = FlatGray().withAlphaComponent(0.25).cgColor
@@ -100,7 +99,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     // MARK: - Delegate Methods
     
-    // MARK: Set the cell size
+    // MARK: Set cell size
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
@@ -117,9 +116,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         print("Start index: \(sourceIndexPath.item)")
         print("End index: \(destinationIndexPath.item)")
         
-        let temp = categories[sourceIndexPath.item]
-        categories[sourceIndexPath.item] = categories[destinationIndexPath.item]
-        categories[destinationIndexPath.item] = temp
+        let temp = categories.remove(at: sourceIndexPath.item)
+        categories.insert(temp, at: destinationIndexPath.item)
+        // Whenever reorder happens, give all categories a new order number
+        var i = categories.count
+        for category in categories {
+            category.order = Int32(i - 1)
+            i -= 1
+        }
         
         saveData()
     }
@@ -139,9 +143,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             newCategory.name = textField.text
             newCategory.colorHex = self.pallet[self.categories.count % self.pallet.count].hexValue()
             newCategory.dateCreated = Date()
+            newCategory.order = self.categories[0].order + 1
             self.categories.insert(newCategory, at: 0)
             
             self.saveData()
+            self.collectionView.reloadData()
             
         }
         
@@ -164,6 +170,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             context.delete(categories[hitIndex!.row])
             categories.remove(at: hitIndex!.row)
             saveData()
+            collectionView.reloadData()
         }
     }
     
@@ -181,14 +188,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             } catch {
                 fatalError("unable to save changes due to error: \(error)")
             }
-            collectionView.reloadData()
-            print("data reloaded")
+//            collectionView.reloadData()
         }
     }
     
     func loadData() {
         let request: NSFetchRequest<Category> = Category.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: false)]
+        request.sortDescriptors = [NSSortDescriptor(key: "order", ascending: false)]
         do {
             categories = try context.fetch(request)
         } catch {
@@ -218,7 +224,6 @@ extension ViewController {
 
         default:
             collectionView.cancelInteractiveMovement()
-//            return
         }
     }
     
@@ -241,5 +246,4 @@ extension ViewController {
             }
         }
     }
-    
 }

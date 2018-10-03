@@ -13,6 +13,8 @@
 		1A9F037A215A5EA7004AF632 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A9F0379215A5EA7004AF632 /* Assets.xcassets */; };
 		1A9F037D215A5EA7004AF632 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A9F037B215A5EA7004AF632 /* LaunchScreen.storyboard */; };
 		1A9F0385215A5F83004AF632 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9F0384215A5F83004AF632 /* CollectionViewCell.swift */; };
+		1AAA9C5821645D98007FB6E8 /* TodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA9C5721645D98007FB6E8 /* TodoViewController.swift */; };
+		1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */; };
 		1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B37215B2E4E004BF093 /* RoundButton.swift */; };
 		1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B5A215B7D53004BF093 /* DataModel.xcdatamodeld */; };
 		9C663B2D1003DADCB0FE8E98 /* Pods_UICollectionView_Practice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2466EC8ACC021E175B4597FB /* Pods_UICollectionView_Practice.framework */; };
@@ -27,6 +29,8 @@
 		1A9F037C215A5EA7004AF632 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1A9F037E215A5EA7004AF632 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A9F0384215A5F83004AF632 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		1AAA9C5721645D98007FB6E8 /* TodoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoViewController.swift; sourceTree = "<group>"; };
+		1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		1AB90B37215B2E4E004BF093 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		1AB90B5B215B7D53004BF093 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		2466EC8ACC021E175B4597FB /* Pods_UICollectionView_Practice.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UICollectionView_Practice.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +73,8 @@
 			children = (
 				1A9F0372215A5EA6004AF632 /* AppDelegate.swift */,
 				1A9F0374215A5EA6004AF632 /* ViewController.swift */,
+				1AAA9C5721645D98007FB6E8 /* TodoViewController.swift */,
+				1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */,
 				1A9F0384215A5F83004AF632 /* CollectionViewCell.swift */,
 				1AB90B37215B2E4E004BF093 /* RoundButton.swift */,
 				1A9F0376215A5EA6004AF632 /* Main.storyboard */,
@@ -174,10 +180,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-UICollectionView Practice/Pods-UICollectionView Practice-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -209,8 +217,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AAA9C5821645D98007FB6E8 /* TodoViewController.swift in Sources */,
 				1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */,
 				1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */,
+				1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */,
 				1A9F0375215A5EA6004AF632 /* ViewController.swift in Sources */,
 				1A9F0373215A5EA6004AF632 /* AppDelegate.swift in Sources */,
 				1A9F0385215A5F83004AF632 /* CollectionViewCell.swift in Sources */,
@@ -363,10 +373,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = V7VTWWGQ56;
 				INFOPLIST_FILE = "UICollectionView Practice/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "shuizhongriyue.UICollectionView-Practice";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -382,10 +389,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = V7VTWWGQ56;
 				INFOPLIST_FILE = "UICollectionView Practice/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "shuizhongriyue.UICollectionView-Practice";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
