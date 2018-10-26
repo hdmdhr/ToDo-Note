@@ -34,7 +34,8 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else {  // .left时可以改变颜色
+        guard orientation == .right else {
+            // .left will change color
             let changeColorAction = SwipeAction(style: .default, title: "Change") { action, indexPath in  // 修改颜色并修改category数据库
                 self.changeColor(at: indexPath)
             }
@@ -50,7 +51,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         }
         
         // customize the action appearance
-        deleteAction.image = UIImage(named: "Trash-Icon")
+        deleteAction.image = UIImage(named: "trash-Icon")
         
         return [deleteAction]
     }

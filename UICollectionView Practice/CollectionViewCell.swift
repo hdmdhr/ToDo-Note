@@ -14,6 +14,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var deleteBtn: UIButton!
     
+    @IBOutlet weak var changeColorBtn: UIButton!
+    
     var isAnimate = false
     
     override func awakeFromNib() {
@@ -45,13 +47,20 @@ class CollectionViewCell: UICollectionViewCell {
         shakeAnimation.timeOffset = 290 * drand48()
         
         layer.add(shakeAnimation, forKey: "animate")
-        deleteBtn.isHidden = false
+        if roundBtn.currentTitle != "+" {
+            deleteBtn.isHidden = false
+            changeColorBtn.isHidden = false
+        } else {
+            deleteBtn.isHidden = true
+            changeColorBtn.isHidden = true
+        }
         isAnimate = true
     }
     
     func stopAnimate(){
         layer.removeAllAnimations()
         deleteBtn.isHidden = true
+        changeColorBtn.isHidden = true
         isAnimate = false
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import ChameleonFramework
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var navBarBtn: UIBarButtonItem!
@@ -18,7 +18,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     var categories: [Category] = []
-    let pallet: [UIColor] = [FlatWatermelon(),FlatRed(),FlatOrange(),FlatYellow(),FlatGreen(),FlatLime(),FlatSkyBlue(),FlatMagenta(),FlatPurple()]
+//    let pallet: [UIColor] = [FlatWatermelon(),FlatRed(),FlatOrange(),FlatYellow(),FlatGreen(),FlatLime(),FlatSkyBlue(),FlatMagenta(),FlatPurple()]
+    let palletHex: [String] = [FlatWatermelon().hexValue(),FlatRed().hexValue(),FlatOrange().hexValue(),FlatYellow().hexValue(),FlatGreen().hexValue(),FlatLime().hexValue(),FlatSkyBlue().hexValue(),FlatMagenta().hexValue(),FlatPurple().hexValue()]
+
 
     var longPressEnabled = false {
         didSet{
@@ -128,20 +130,41 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         saveData()
     }
     
-    // MARK: - Add/Delete categories
+    // MARK: - Add/Delete/Edit/Change categories
+    var tappedCategory: Category = Category()
     
-    @IBAction func addButtonPressed(_ sender: RoundButton) {
-        guard sender.currentTitle! == "+" else { return }
-
+    @IBAction func roundButtonPressed(_ sender: RoundButton) {
+        if sender.currentTitle! == "+" {
+            addButtonPressed()
+        } else {
+            // TODO: - Segue to ToDoVC based on what category user tapped -
+            let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
+            let hitIndex = collectionView.indexPathForItem(at: hitPoint)
+            tappedCategory = categories[hitIndex!.item]
+            
+            longPressEnabled = false
+            performSegue(withIdentifier: "ShowItems", sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowItems" {
+            let destinationVC = segue.destination as! ToDoVC
+            destinationVC.category = tappedCategory
+            destinationVC.navigationItem.title = tappedCategory.name
+        }
+    }
+    
+    func addButtonPressed(){
         var textField = UITextField()
         
         let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
         
-        let action = UIAlertAction(title: "Add", style: .default) { (action) in
+        let action = UIAlertAction(title: "Add", style: .cancel) { (action) in
             
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text
-            newCategory.colorHex = self.pallet[self.categories.count % self.pallet.count].hexValue()
+            newCategory.colorHex = self.palletHex[self.categories.count % self.palletHex.count]
             newCategory.dateCreated = Date()
             newCategory.order = self.categories[0].order + 1
             self.categories.insert(newCategory, at: 0)
@@ -174,6 +197,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
+    @IBAction func changeColorBtnPressed(_ sender: UIButton) {
+        let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
+        let hitIndex = collectionView.indexPathForItem(at: hitPoint)
+
+        let currentColorHex = categories[hitIndex!.row].colorHex!
+        let index = palletHex.firstIndex(of: currentColorHex)!
+        categories[hitIndex!.row].colorHex! = palletHex[(index + 1) % palletHex.count]
+        if let cell = collectionView.cellForItem(at: hitIndex!) as? CollectionViewCell {
+            cell.roundBtn.backgroundColor = HexColor(categories[hitIndex!.row].colorHex!)
+        }
+        
+        saveData()
+    }
+    
+
     @IBAction func navBarBtnPressed(_ sender: UIBarButtonItem) {
         longPressEnabled = !longPressEnabled
     }
@@ -206,7 +244,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
 // MARK: - Gesture handling
 
-extension ViewController {
+extension CollectionViewController {
     
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
         
