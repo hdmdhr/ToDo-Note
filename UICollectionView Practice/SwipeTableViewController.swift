@@ -8,6 +8,7 @@
 
 import UIKit
 import SwipeCellKit
+import ChameleonFramework
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
 
@@ -32,28 +33,31 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     // MARK: - Swipe to Delete
     
-    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else {
-            // .left will change color
-            let changeColorAction = SwipeAction(style: .default, title: "Change") { action, indexPath in  // 修改颜色并修改category数据库
-                self.changeColor(at: indexPath)
-            }
-            
-            // customize the action appearance
-            changeColorAction.image = UIImage(named: "color-wheel")
-            
-            return [changeColorAction]
-        }
+        guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            self.updateModel(at: indexPath)
+            let alert = UIAlertController(title: "Delete selected item and notes", message: "", preferredStyle: .alert)
+            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+                self.updateModel(at: indexPath)
+            })
+            
+            alert.addAction(deleteAction)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        let changeColorAction = SwipeAction(style: .default, title: "Change") { action, indexPath in
+            self.changeColor(at: indexPath)  // Change color and update database
         }
         
         // customize the action appearance
         deleteAction.image = UIImage(named: "trash-Icon")
+        changeColorAction.image = UIImage(named: "color-wheel")
+        changeColorAction.backgroundColor = FlatWhiteDark()
         
-        return [deleteAction]
+        return [deleteAction, changeColorAction]
     }
     
     // MARK: Swipe far enough to delete
@@ -61,11 +65,9 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
         var options = SwipeTableOptions()
 
-        if orientation == .right{
-            options.expansionStyle = .destructive
-        } else {
-            options.expansionStyle = .selection
-        }
+        options.expansionStyle = .none
+        options.transitionStyle = .border
+        
         return options
     }
 

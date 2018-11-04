@@ -17,6 +17,7 @@
 		1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */; };
 		1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B37215B2E4E004BF093 /* RoundButton.swift */; };
 		1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B5A215B7D53004BF093 /* DataModel.xcdatamodeld */; };
+		56F45AE1218BDAE900D0BD08 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F45AE0218BDAE900D0BD08 /* Settings.swift */; };
 		9C663B2D1003DADCB0FE8E98 /* Pods_UICollectionView_Practice.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2466EC8ACC021E175B4597FB /* Pods_UICollectionView_Practice.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		1AB90B37215B2E4E004BF093 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		1AB90B5B215B7D53004BF093 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		2466EC8ACC021E175B4597FB /* Pods_UICollectionView_Practice.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UICollectionView_Practice.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		56F45AE0218BDAE900D0BD08 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		797524B0D61ED8BEA200DB09 /* Pods-UICollectionView Practice.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UICollectionView Practice.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UICollectionView Practice/Pods-UICollectionView Practice.debug.xcconfig"; sourceTree = "<group>"; };
 		A69B6A1646C86B0EF856BEBB /* Pods-UICollectionView Practice.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UICollectionView Practice.release.xcconfig"; path = "Pods/Target Support Files/Pods-UICollectionView Practice/Pods-UICollectionView Practice.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +79,7 @@
 				1AB90B37215B2E4E004BF093 /* RoundButton.swift */,
 				1AAA9C5721645D98007FB6E8 /* ToDoVC.swift */,
 				1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */,
+				56F45AE0218BDAE900D0BD08 /* Settings.swift */,
 				1A9F0376215A5EA6004AF632 /* Main.storyboard */,
 				1AB90B5A215B7D53004BF093 /* DataModel.xcdatamodeld */,
 				1A9F0379215A5EA7004AF632 /* Assets.xcassets */,
@@ -219,6 +222,7 @@
 			files = (
 				1AAA9C5821645D98007FB6E8 /* ToDoVC.swift in Sources */,
 				1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */,
+				56F45AE1218BDAE900D0BD08 /* Settings.swift in Sources */,
 				1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */,
 				1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */,
 				1A9F0375215A5EA6004AF632 /* CollectionViewController.swift in Sources */,

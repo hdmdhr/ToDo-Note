@@ -19,6 +19,7 @@ class ToDoVC: SwipeTableViewController {
     var category : Category? {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
+            navigationItem.title = category?.name
         }
     }
 
@@ -37,7 +38,7 @@ class ToDoVC: SwipeTableViewController {
 //        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : navBar.tintColor]
         
         
-//        searchBar.barTintColor = UIColor(hexString: category!.colorHex)
+        searchBar.barTintColor = UIColor(hexString: category!.colorHex!)
     }
     
     //MARK: - Tableview Datasource
@@ -97,6 +98,7 @@ class ToDoVC: SwipeTableViewController {
         }
         
         alert.addAction(action)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
         
     }
@@ -104,26 +106,24 @@ class ToDoVC: SwipeTableViewController {
     
     // MARK: - Delete Data by Swipe to Left
     
-//    override func updateModel(at indexPath: IndexPath) {
-//        do {
-//            try self.realm.write {
-//                self.realm.delete(items![indexPath.row])
-//            }
-//        } catch {
-//            fatalError("Error with deleting data, \(error)")
-//        }
-//    }
+    override func updateModel(at indexPath: IndexPath) {
+        context.delete(items[indexPath.row])
+        items.remove(at: indexPath.row)
+        saveItems()
+        tableView.reloadData()
+    }
     
     // MARK: - Change Color by Swipe to Right
     
-//    override func changeColor(at indexPath: IndexPath) {
-//        try! realm.write {
-//            category!.colorHex = RandomFlatColor().hexValue()
-//
-//            tableView.reloadData()
-//            viewWillAppear(true)
-//        }
-//    }
+    override func changeColor(at indexPath: IndexPath) {
+
+        let index = Settings.palletHex.firstIndex(of: category!.colorHex!)!
+        category!.colorHex = Settings.palletHex[(index + 1) % Settings.palletHex.count]
+        
+        tableView.reloadData()
+        viewWillAppear(true)
+
+    }
     
     
     // MARK: - Data Manipulation Methods

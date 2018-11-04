@@ -18,9 +18,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     var categories: [Category] = []
-//    let pallet: [UIColor] = [FlatWatermelon(),FlatRed(),FlatOrange(),FlatYellow(),FlatGreen(),FlatLime(),FlatSkyBlue(),FlatMagenta(),FlatPurple()]
-    let palletHex: [String] = [FlatWatermelon().hexValue(),FlatRed().hexValue(),FlatOrange().hexValue(),FlatYellow().hexValue(),FlatGreen().hexValue(),FlatLime().hexValue(),FlatSkyBlue().hexValue(),FlatMagenta().hexValue(),FlatPurple().hexValue()]
-
 
     var longPressEnabled = false {
         didSet{
@@ -41,7 +38,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         loadData()
         navBarBtn.title = "Edit"
         
@@ -131,13 +128,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     // MARK: - Add/Delete/Edit/Change categories
-    var tappedCategory: Category = Category()
+    var tappedCategory: Category?
     
     @IBAction func roundButtonPressed(_ sender: RoundButton) {
         if sender.currentTitle! == "+" {
             addButtonPressed()
         } else {
-            // TODO: - Segue to ToDoVC based on what category user tapped -
             let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
             let hitIndex = collectionView.indexPathForItem(at: hitPoint)
             tappedCategory = categories[hitIndex!.item]
@@ -151,20 +147,19 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         if segue.identifier == "ShowItems" {
             let destinationVC = segue.destination as! ToDoVC
             destinationVC.category = tappedCategory
-            destinationVC.navigationItem.title = tappedCategory.name
         }
     }
     
-    func addButtonPressed(){
+    private func addButtonPressed(){
         var textField = UITextField()
         
         let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
         
-        let action = UIAlertAction(title: "Add", style: .cancel) { (action) in
+        let action = UIAlertAction(title: "Add", style: .default) { (action) in
             
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text
-            newCategory.colorHex = self.palletHex[self.categories.count % self.palletHex.count]
+            newCategory.colorHex = Settings.palletHex[self.categories.count % Settings.palletHex.count]
             newCategory.dateCreated = Date()
             newCategory.order = self.categories[0].order + 1
             self.categories.insert(newCategory, at: 0)
@@ -175,11 +170,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
         
         alert.addTextField { (field) in
-            field.placeholder = "Type a new category name"
+            field.placeholder = "New category name"
             textField = field
         }
         
         alert.addAction(action)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
         
         present(alert, animated: true, completion: nil)
         
@@ -187,11 +183,27 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBAction func deleteBtnPressed(_ sender: UIButton) {
         let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
-        let hitIndex = collectionView.indexPathForItem(at: hitPoint)
+        guard let hitIndex = collectionView.indexPathForItem(at: hitPoint) else { fatalError("cannot find tapped index") }
         
-        if categories[hitIndex!.row].name != "+" {
-            context.delete(categories[hitIndex!.row])
-            categories.remove(at: hitIndex!.row)
+        let alert = UIAlertController(title: "will also delete ALL items and notes the category contains", message: "", preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+            self.deleteActionWithHitIndex(hitIndex)
+        })
+        
+        alert.addAction(deleteAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func deleteActionWithHitIndex(_ hitIndex: IndexPath) {
+        if categories[hitIndex.row].name != "+" {
+            let itemsUnderCategory = categories[hitIndex.row].itemsToDo?.allObjects as! [ToDoItems]
+            for item in itemsUnderCategory {
+                context.delete(item)
+            }
+            context.delete(categories[hitIndex.row])
+            categories.remove(at: hitIndex.row)
             saveData()
             collectionView.reloadData()
         }
@@ -202,8 +214,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let hitIndex = collectionView.indexPathForItem(at: hitPoint)
 
         let currentColorHex = categories[hitIndex!.row].colorHex!
-        let index = palletHex.firstIndex(of: currentColorHex)!
-        categories[hitIndex!.row].colorHex! = palletHex[(index + 1) % palletHex.count]
+        let index = Settings.palletHex.firstIndex(of: currentColorHex)!
+        categories[hitIndex!.row].colorHex! = Settings.palletHex[(index + 1) % Settings.palletHex.count]
         if let cell = collectionView.cellForItem(at: hitIndex!) as? CollectionViewCell {
             cell.roundBtn.backgroundColor = HexColor(categories[hitIndex!.row].colorHex!)
         }
