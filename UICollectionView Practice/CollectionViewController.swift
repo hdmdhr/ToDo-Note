@@ -70,6 +70,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
 //        layout.sectionInsetReference = .fromSafeArea
 //        print("item size: \(layout.itemSize)")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
+        navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
+    }
 
     // MARK: - Datasource methods
     

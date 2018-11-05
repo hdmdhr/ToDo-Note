@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import ChameleonFramework
+import SwipeCellKit
 
 class ToDoVC: SwipeTableViewController {
     
@@ -31,7 +32,7 @@ class ToDoVC: SwipeTableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
-        guard let navBar = navigationController?.navigationBar else { fatalError() }
+        guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
 //        guard let barColor = UIColor(hexString: category!.colorHex) else { fatalError() }
         navBar.barTintColor = UIColor(hexString: category!.colorHex!)
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
@@ -49,13 +50,14 @@ class ToDoVC: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath) as! MyTableViewCell
         
-            cell.textLabel?.text = items[indexPath.row].title
-            cell.accessoryType = items[indexPath.row].done ? .checkmark : .none  // 检查是否显示√
-            
-            cell.backgroundColor = UIColor(hexString: category!.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.2)
-            cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
+        cell.textLabel?.text = items[indexPath.row].title
+        let image = items[indexPath.row].done ? UIImage(named: "checked") : UIImage(named: "crossed")
+        cell.checkBox.setImage(image, for: .normal)
+        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = UIColor(hexString: category!.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.2)
+        cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         
         
         return cell
@@ -67,7 +69,14 @@ class ToDoVC: SwipeTableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)   // 选中后一闪而过
         
-        items[indexPath.row].done = !items[indexPath.row].done
+
+    }
+    
+    @IBAction func checkBoxPressed(_ sender: UIButton) {
+        let hitPoint = sender.convert(CGPoint.zero, to: tableView)
+        guard let hitIndex = tableView.indexPathForRow(at: hitPoint) else { fatalError("cannot find hit index") }
+        
+        items[hitIndex.row].done = !items[hitIndex.row].done
         
         saveItems()
         tableView.reloadData()

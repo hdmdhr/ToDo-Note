@@ -195,7 +195,7 @@
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Cell" rowHeight="74" id="b0h-wu-V89" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Cell" rowHeight="74" id="b0h-wu-V89" customClass="MyTableViewCell" customModule="UICollectionView_Practice" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="414" height="74"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="b0h-wu-V89" id="Rng-D2-Nla">
@@ -208,6 +208,9 @@
                                                 <constraint firstAttribute="width" secondItem="YQh-JJ-1CK" secondAttribute="height" multiplier="1:1" id="iCr-Xr-tdZ"/>
                                             </constraints>
                                             <state key="normal" backgroundImage="empty"/>
+                                            <connections>
+                                                <action selector="checkBoxPressed:" destination="aBZ-xO-cug" eventType="touchUpInside" id="opC-vx-qrf"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <constraints>
@@ -217,6 +220,9 @@
                                         <constraint firstItem="YQh-JJ-1CK" firstAttribute="width" secondItem="Rng-D2-Nla" secondAttribute="height" multiplier="2:5" id="iOj-3M-NbM"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="checkBox" destination="YQh-JJ-1CK" id="C85-I9-0Ki"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -234,11 +240,27 @@
                     </navigationItem>
                     <connections>
                         <outlet property="searchBar" destination="OPy-S0-x1W" id="B1q-Gb-idX"/>
+                        <segue destination="zgJ-pb-CfG" kind="show" identifier="ShowNotes" id="q4c-fS-QyA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vR6-Mq-8GV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1837.68115942029" y="131.25"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="cjM-sR-64F">
+            <objects>
+                <viewController id="zgJ-pb-CfG" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="CIS-AK-ZBQ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="x7q-WE-4YD"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vf8-fr-bCz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2659" y="130"/>
         </scene>
     </scenes>
     <resources>
