@@ -84,6 +84,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
         navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
+        collectionView.reloadData()
     }
 
     // MARK: - Datasource methods
