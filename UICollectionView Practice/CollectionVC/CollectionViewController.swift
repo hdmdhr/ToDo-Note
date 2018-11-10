@@ -16,7 +16,17 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     @IBOutlet weak var navBarBtn: UIBarButtonItem!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
+    let btnSizes = [2:2, 3:3, 4:4]
+    var sizeSetter = 2 {
+        didSet{
+            if sizeSetter > 4 { sizeSetter = 4 } else if sizeSetter < 2 { sizeSetter = 2 }
+        }
+    }
+    var currentBtnNumber: CGFloat {
+        get{
+            return CGFloat(btnSizes[sizeSetter]!)
+        }
+    }
     var categories: [Category] = []
 
     var longPressEnabled = false {
@@ -38,7 +48,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         loadData()
         navBarBtn.title = "Edit"
         
@@ -61,9 +70,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         
         // MARK: - Set Layouts
-//        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-//        layout.minimumInteritemSpacing = 2
-//        layout.minimumLineSpacing = 4
+        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.minimumInteritemSpacing = 4
+        layout.minimumLineSpacing = 4
 //        layout.estimatedItemSize = layout.collectionViewContentSize
 //        layout.sectionInset = UIEdgeInsets(top: 10 , left: 0, bottom: 10, right: 0)
 //        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
@@ -74,6 +83,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     override func viewWillAppear(_ animated: Bool) {
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
+        navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
     }
 
     // MARK: - Datasource methods
@@ -86,11 +96,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
 //        cell.backgroundColor = HexColor("9A9A9A", 0.25)
-        cell.roundBtn.layer.cornerRadius = 0.5 * 7 * (UIScreen.main.bounds.width/2 - 5) / 8
+//        cell.roundBtn.layer.cornerRadius = 0.4 * (UIScreen.main.bounds.width/currentBtnNumber - 5) * 3 / 4
         cell.layer.borderWidth = 1
-        cell.layer.borderColor = FlatGray().withAlphaComponent(0.25).cgColor
+        cell.layer.borderColor = FlatGray().withAlphaComponent(0.15).cgColor
         cell.roundBtn.setTitle(categories[indexPath.item].name, for: .normal)
-        cell.roundBtn.backgroundColor = HexColor(categories[indexPath.item].colorHex ?? FlatWatermelon().hexValue(), 0.85)
+        cell.roundBtn.backgroundColor = HexColor(categories[indexPath.item].colorHex ?? FlatWatermelon().hexValue(), 0.9)
+        cell.roundBtn.tintColor = ContrastColorOf(cell.roundBtn.backgroundColor!, returnFlat: true)
         
         if longPressEnabled {
             cell.startAnimate()
@@ -106,7 +117,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: Set cell size
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)
+        return CGSize(width: UIScreen.main.bounds.width/currentBtnNumber - 5, height: UIScreen.main.bounds.width/currentBtnNumber - 5)
     }
     
     // MARK: Move cells
@@ -132,11 +143,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         saveData()
     }
     
-    // MARK: - Add/Delete/Edit/Change categories
+    // MARK: - Add/Delete/Edit/Change categories & Navigation
     var tappedCategory: Category?
     
     @IBAction func roundButtonPressed(_ sender: RoundButton) {
-        if sender.currentTitle! == "+" {
+        if sender.currentTitle == "+" {
             addButtonPressed()
         } else {
             let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
@@ -150,8 +161,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowItems" {
-            let destinationVC = segue.destination as! ToDoVC
-            destinationVC.category = tappedCategory
+            let toDoVC = segue.destination as! ToDoVC
+            toDoVC.category = tappedCategory
         }
     }
     
@@ -190,9 +201,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
         guard let hitIndex = collectionView.indexPathForItem(at: hitPoint) else { fatalError("cannot find tapped index") }
         
-        let alert = UIAlertController(title: "will also delete ALL items and notes the category contains", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete all items and notes under the selected category", preferredStyle: .alert)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-            self.deleteActionWithHitIndex(hitIndex)
+            self.deleteDataWithHitIndex(hitIndex)
         })
         
         alert.addAction(deleteAction)
@@ -201,7 +212,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         self.present(alert, animated: true, completion: nil)
     }
     
-    private func deleteActionWithHitIndex(_ hitIndex: IndexPath) {
+    private func deleteDataWithHitIndex(_ hitIndex: IndexPath) {
         if categories[hitIndex.row].name != "+" {
             let itemsUnderCategory = categories[hitIndex.row].itemsToDo?.allObjects as! [ToDoItems]
             for item in itemsUnderCategory {
@@ -223,12 +234,27 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         categories[hitIndex!.row].colorHex! = Settings.palletHex[(index + 1) % Settings.palletHex.count]
         if let cell = collectionView.cellForItem(at: hitIndex!) as? CollectionViewCell {
             cell.roundBtn.backgroundColor = HexColor(categories[hitIndex!.row].colorHex!)
+            cell.roundBtn.tintColor = ContrastColorOf(cell.roundBtn.backgroundColor!, returnFlat: true)
         }
         
         saveData()
     }
     
-
+    @IBAction func changeCellSizeBtnPressed(_ sender: UIButton) {
+        switch sender.tag {
+        case 4:
+            // enlarge
+            sizeSetter -= 1
+            collectionView.collectionViewLayout.invalidateLayout()
+        case 3:
+            sizeSetter += 1
+            collectionView.collectionViewLayout.invalidateLayout()
+        default:
+            return
+        }
+        collectionView.layoutIfNeeded()
+    }
+    
     @IBAction func navBarBtnPressed(_ sender: UIBarButtonItem) {
         longPressEnabled = !longPressEnabled
     }
@@ -243,7 +269,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             } catch {
                 fatalError("unable to save changes due to error: \(error)")
             }
-//            collectionView.reloadData()
         }
     }
     

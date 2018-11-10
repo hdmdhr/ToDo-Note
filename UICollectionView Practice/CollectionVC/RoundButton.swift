@@ -12,14 +12,17 @@ import UIKit
     
     override func awakeFromNib() {
         super.awakeFromNib()
-//        print("button bounds size: \(bounds.size)")
-//        layer.cornerRadius = 0.5 * layer.bounds.width
         layer.masksToBounds = true
 //        clipsToBounds = true
     }
+    
     override func willMove(toSuperview newSuperview: UIView?) {
-        layer.cornerRadius = 0.5 * layer.bounds.width
     }
+    
+    override func setNeedsLayout() {
+        layer.cornerRadius = 0.25 * layer.bounds.width
+    }
+    
     override var isHighlighted: Bool {
         didSet{
             if isHighlighted { alpha = 0.5 } else { alpha = 1 }

@@ -36,7 +36,7 @@ class ToDoVC: SwipeTableViewController {
 //        guard let barColor = UIColor(hexString: category!.colorHex) else { fatalError() }
         navBar.barTintColor = UIColor(hexString: category!.colorHex!)
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
-//        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : navBar.tintColor]
+        navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
         
         
         searchBar.barTintColor = UIColor(hexString: category!.colorHex!)
@@ -63,13 +63,21 @@ class ToDoVC: SwipeTableViewController {
         return cell
     }
 
-    // MARK: - Tableview Delegate
+    // MARK: - Tableview Delegate & Navigation
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        performSegue(withIdentifier: "ShowNotes", sender: self)
         tableView.deselectRow(at: indexPath, animated: true)   // 选中后一闪而过
-        
 
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowNotes" {
+            let noteVC = segue.destination as! NotesVC
+            guard let index = tableView.indexPathForSelectedRow else {fatalError("No selected row")}
+            noteVC.currentItem = items[index.row]
+        }
     }
     
     @IBAction func checkBoxPressed(_ sender: UIButton) {
@@ -91,7 +99,7 @@ class ToDoVC: SwipeTableViewController {
         let alert = UIAlertController(title: "Add Todo Item", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            //MARK: Create newItem，Set its properties，Save
+            // Create newItem，Set its properties，Save
             let newItem = ToDoItems(context: self.context)
             newItem.title = textField.text
             newItem.done = false
@@ -128,6 +136,7 @@ class ToDoVC: SwipeTableViewController {
 
         let index = Settings.palletHex.firstIndex(of: category!.colorHex!)!
         category!.colorHex = Settings.palletHex[(index + 1) % Settings.palletHex.count]
+        saveItems()
         
         tableView.reloadData()
         viewWillAppear(true)

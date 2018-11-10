@@ -16,6 +16,10 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var changeColorBtn: UIButton!
     
+    @IBOutlet weak var plusBtn: UIButton!
+    
+    @IBOutlet weak var minusBtn: UIButton!
+    
     var isAnimate = false
     
     override func awakeFromNib() {
@@ -47,12 +51,17 @@ class CollectionViewCell: UICollectionViewCell {
         shakeAnimation.timeOffset = 290 * drand48()
         
         layer.add(shakeAnimation, forKey: "animate")
+        
         if roundBtn.currentTitle != "+" {
             deleteBtn.isHidden = false
             changeColorBtn.isHidden = false
+            plusBtn.isHidden = false
+            minusBtn.isHidden = false
         } else {
             deleteBtn.isHidden = true
             changeColorBtn.isHidden = true
+            plusBtn.isHidden = false
+            minusBtn.isHidden = false
         }
         isAnimate = true
     }
@@ -61,6 +70,8 @@ class CollectionViewCell: UICollectionViewCell {
         layer.removeAllAnimations()
         deleteBtn.isHidden = true
         changeColorBtn.isHidden = true
+        plusBtn.isHidden = true
+        minusBtn.isHidden = true
         isAnimate = false
     }
 }

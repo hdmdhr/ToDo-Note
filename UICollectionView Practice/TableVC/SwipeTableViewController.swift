@@ -37,7 +37,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            let alert = UIAlertController(title: "Delete selected item and notes", message: "", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete notes under the selected item", preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
                 self.updateModel(at: indexPath)
             })
