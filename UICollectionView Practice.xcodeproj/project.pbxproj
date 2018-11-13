@@ -17,6 +17,9 @@
 		1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA9C5921645E11007FB6E8 /* SwipeTableViewController.swift */; };
 		1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B37215B2E4E004BF093 /* RoundButton.swift */; };
 		1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1AB90B5A215B7D53004BF093 /* DataModel.xcdatamodeld */; };
+		563187D2219A8B4500E5B6BF /* SwipingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563187D1219A8B4500E5B6BF /* SwipingController.swift */; };
+		563187D4219A8BDE00E5B6BF /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563187D3219A8BDE00E5B6BF /* Page.swift */; };
+		563187D6219A8C9E00E5B6BF /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563187D5219A8C9E00E5B6BF /* PageCell.swift */; };
 		56714F7621914245000CBB04 /* NotesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56714F7521914245000CBB04 /* NotesVC.swift */; };
 		5682BE28218FBDC60029A80A /* MyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5682BE27218FBDC60029A80A /* MyTableViewCell.swift */; };
 		56F45AE1218BDAE900D0BD08 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F45AE0218BDAE900D0BD08 /* Settings.swift */; };
@@ -37,6 +40,9 @@
 		1AB90B37215B2E4E004BF093 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		1AB90B5B215B7D53004BF093 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		2466EC8ACC021E175B4597FB /* Pods_UICollectionView_Practice.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UICollectionView_Practice.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		563187D1219A8B4500E5B6BF /* SwipingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipingController.swift; sourceTree = "<group>"; };
+		563187D3219A8BDE00E5B6BF /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
+		563187D5219A8C9E00E5B6BF /* PageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
 		56714F7521914245000CBB04 /* NotesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesVC.swift; sourceTree = "<group>"; };
 		5682BE27218FBDC60029A80A /* MyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTableViewCell.swift; sourceTree = "<group>"; };
 		56F45AE0218BDAE900D0BD08 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -84,6 +90,7 @@
 				56F45AE0218BDAE900D0BD08 /* Settings.swift */,
 				1A9F0376215A5EA6004AF632 /* Main.storyboard */,
 				1AB90B5A215B7D53004BF093 /* DataModel.xcdatamodeld */,
+				563187D0219A8AF400E5B6BF /* Tutorial */,
 				1A9F0379215A5EA7004AF632 /* Assets.xcassets */,
 				1A9F037B215A5EA7004AF632 /* LaunchScreen.storyboard */,
 				1A9F037E215A5EA7004AF632 /* Info.plist */,
@@ -98,6 +105,16 @@
 				A69B6A1646C86B0EF856BEBB /* Pods-UICollectionView Practice.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		563187D0219A8AF400E5B6BF /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				563187D3219A8BDE00E5B6BF /* Page.swift */,
+				563187D1219A8B4500E5B6BF /* SwipingController.swift */,
+				563187D5219A8C9E00E5B6BF /* PageCell.swift */,
+			);
+			path = Tutorial;
 			sourceTree = "<group>";
 		};
 		56714F7721914329000CBB04 /* CollectionVC */ = {
@@ -244,10 +261,13 @@
 			files = (
 				1AAA9C5821645D98007FB6E8 /* ToDoVC.swift in Sources */,
 				1AB90B38215B2E4E004BF093 /* RoundButton.swift in Sources */,
+				563187D4219A8BDE00E5B6BF /* Page.swift in Sources */,
 				56F45AE1218BDAE900D0BD08 /* Settings.swift in Sources */,
 				1AB90B5C215B7D53004BF093 /* DataModel.xcdatamodeld in Sources */,
 				1AAA9C5A21645E11007FB6E8 /* SwipeTableViewController.swift in Sources */,
 				5682BE28218FBDC60029A80A /* MyTableViewCell.swift in Sources */,
+				563187D2219A8B4500E5B6BF /* SwipingController.swift in Sources */,
+				563187D6219A8C9E00E5B6BF /* PageCell.swift in Sources */,
 				56714F7621914245000CBB04 /* NotesVC.swift in Sources */,
 				1A9F0375215A5EA6004AF632 /* CollectionViewController.swift in Sources */,
 				1A9F0373215A5EA6004AF632 /* AppDelegate.swift in Sources */,

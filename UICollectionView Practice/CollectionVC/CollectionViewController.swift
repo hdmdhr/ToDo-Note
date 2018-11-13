@@ -72,7 +72,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // MARK: - Set Layouts
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.minimumInteritemSpacing = 4
-        layout.minimumLineSpacing = 4
+        layout.minimumLineSpacing = 8
 //        layout.estimatedItemSize = layout.collectionViewContentSize
 //        layout.sectionInset = UIEdgeInsets(top: 10 , left: 0, bottom: 10, right: 0)
 //        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/2 - 5, height: UIScreen.main.bounds.width/2 - 5)

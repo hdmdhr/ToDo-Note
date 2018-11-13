@@ -219,6 +219,108 @@
             </objects>
             <point key="canvasLocation" x="140" y="132.68365817091455"/>
         </scene>
+        <!--Swiping Controller-->
+        <scene sceneID="pLI-kN-FIj">
+            <objects>
+                <collectionViewController storyboardIdentifier="tutorialScreen" id="SRE-Pw-qYF" customClass="SwipingController" customModule="UICollectionView_Practice" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Fjq-RL-gaj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="MTL-WV-Jkn">
+                            <size key="itemSize" width="414" height="719"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="pageCell" id="kLU-0d-GSc" customClass="PageCell" customModule="UICollectionView_Practice" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="719"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="719"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aoA-Pn-PDb">
+                                            <rect key="frame" x="27.333333333333343" y="53" width="359.33333333333326" height="288"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="aoA-Pn-PDb" secondAttribute="height" multiplier="1:1" id="geA-hm-ATT"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uwe-S6-5R1">
+                                            <rect key="frame" x="182" y="357" width="50.333333333333343" height="55"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xUL-YR-Jp0">
+                                            <rect key="frame" x="33" y="440" width="348" height="179"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="bH6-oP-iRV">
+                                            <rect key="frame" x="0.0" y="669" width="414" height="50"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Iv9-6e-pPl">
+                                                    <rect key="frame" x="0.0" y="0.0" width="138" height="50"/>
+                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <state key="normal" title="Back"/>
+                                                    <connections>
+                                                        <action selector="backBtnPressed:" destination="SRE-Pw-qYF" eventType="touchUpInside" id="C3J-33-ock"/>
+                                                    </connections>
+                                                </button>
+                                                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="MSC-Ez-Vg2">
+                                                    <rect key="frame" x="138" y="0.0" width="138" height="50"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="tintColor" red="0.90980392156862744" green="0.26666666666666666" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                                </pageControl>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2ni-3r-kDT">
+                                                    <rect key="frame" x="276" y="0.0" width="138" height="50"/>
+                                                    <color key="tintColor" red="0.90980392156862744" green="0.26666666666666666" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" title="Next"/>
+                                                    <connections>
+                                                        <action selector="nextBtnPressed:" destination="SRE-Pw-qYF" eventType="touchUpInside" id="9eM-mW-ooN"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="50" id="jc1-bL-MmY"/>
+                                            </constraints>
+                                        </stackView>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="uwe-S6-5R1" firstAttribute="centerX" secondItem="kLU-0d-GSc" secondAttribute="centerX" id="5Ii-SH-SgW"/>
+                                    <constraint firstItem="aoA-Pn-PDb" firstAttribute="height" secondItem="kLU-0d-GSc" secondAttribute="height" multiplier="1:2" id="OWo-uW-UcG"/>
+                                    <constraint firstItem="uwe-S6-5R1" firstAttribute="top" secondItem="aoA-Pn-PDb" secondAttribute="bottom" constant="15" id="Oqb-74-3M1"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="xUL-YR-Jp0" secondAttribute="trailing" constant="25" id="QZl-QO-jRg"/>
+                                    <constraint firstAttribute="trailing" secondItem="bH6-oP-iRV" secondAttribute="trailing" id="UVx-6u-HKo"/>
+                                    <constraint firstItem="xUL-YR-Jp0" firstAttribute="top" secondItem="uwe-S6-5R1" secondAttribute="bottom" constant="10" id="ZS7-7O-7lZ"/>
+                                    <constraint firstItem="xUL-YR-Jp0" firstAttribute="leading" secondItem="kLU-0d-GSc" secondAttribute="leadingMargin" constant="25" id="cNJ-QS-f3S"/>
+                                    <constraint firstItem="bH6-oP-iRV" firstAttribute="leading" secondItem="kLU-0d-GSc" secondAttribute="leading" id="s35-Rl-Fs6"/>
+                                    <constraint firstItem="aoA-Pn-PDb" firstAttribute="centerX" secondItem="kLU-0d-GSc" secondAttribute="centerX" id="tNb-uI-Nno"/>
+                                    <constraint firstAttribute="bottom" secondItem="bH6-oP-iRV" secondAttribute="bottom" id="vdm-iM-egr"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="bodyTextView" destination="xUL-YR-Jp0" id="TYq-w3-6kD"/>
+                                    <outlet property="headerLabel" destination="uwe-S6-5R1" id="WUB-6i-NhR"/>
+                                    <outlet property="pageControl" destination="MSC-Ez-Vg2" id="mgt-SA-U37"/>
+                                    <outlet property="pageImage" destination="aoA-Pn-PDb" id="vAp-MF-F4N"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="SRE-Pw-qYF" id="vdL-Hc-pVc"/>
+                            <outlet property="delegate" destination="SRE-Pw-qYF" id="jEF-o4-ggV"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5Io-el-eYC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="118.84057971014494" y="847.01086956521749"/>
+        </scene>
         <!--ToDoItems-->
         <scene sceneID="pX0-u5-7cx">
             <objects>
