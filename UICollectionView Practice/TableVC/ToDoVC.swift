@@ -31,15 +31,15 @@ class ToDoVC: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        tableView.backgroundColor = UIColor(hexString: category.colorHex!)
+
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
 //        guard let barColor = UIColor(hexString: category.colorHex) else { fatalError() }
         navBar.barTintColor = UIColor(hexString: category.colorHex!)
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
         navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
         
-        
-        searchBar.barTintColor = UIColor(hexString: category.colorHex!)
+        searchBar.barTintColor = HexColor(category.colorHex!)
     }
     
     //MARK: - Tableview Datasource
@@ -59,7 +59,7 @@ class ToDoVC: SwipeTableViewController {
             let image = items[indexPath.row].done ? UIImage(named: "checked") : UIImage(named: "empty")
             cell.checkBox.setImage(image, for: .normal)
         }
-        cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.2)
+        cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.15)
         cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         
         
@@ -130,7 +130,7 @@ class ToDoVC: SwipeTableViewController {
     override func failingItemAt(_ indexPath: IndexPath) {
         items[indexPath.row].failed = !items[indexPath.row].failed
         saveItems()
-        tableView.reloadData()
+        tableView.reloadRows(at: [indexPath], with: .left)
     }
     
     // MARK:  Change Color
@@ -141,8 +141,10 @@ class ToDoVC: SwipeTableViewController {
         category.colorHex = Settings.palletHex[(index + 1) % Settings.palletHex.count]
         saveItems()
         let cells = tableView.visibleCells
+        var i = 0
         for cell in cells {
-            cell.backgroundColor = HexColor(category.colorHex!)
+            cell.backgroundColor = HexColor(category.colorHex!)?.darken(byPercentage: CGFloat(i) / CGFloat(cells.count) * 0.15)
+            i += 1
         }
         
         viewWillAppear(true)

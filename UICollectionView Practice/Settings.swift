@@ -12,7 +12,7 @@ import ChameleonFramework
 struct Settings {
     static let palletHex: [String] =
         [FlatWatermelon().hexValue(),
-         FlatRed().hexValue(),
+         FlatPink().hexValue(),
          FlatOrange().hexValue(),
          FlatYellow().hexValue(),
          FlatGreen().hexValue(),

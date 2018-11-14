@@ -23,11 +23,13 @@ import UIKit
         super.setNeedsLayout()
         layer.cornerRadius = 0.25 * layer.bounds.width
     }
-    
-    override var isHighlighted: Bool {
+
+}
+
+extension UIButton {
+    override open var isHighlighted: Bool {
         didSet{
             if isHighlighted { alpha = 0.5 } else { alpha = 1 }
         }
     }
-
 }
