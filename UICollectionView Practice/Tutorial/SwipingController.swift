@@ -30,18 +30,6 @@ class SwipingController: UICollectionViewController, UICollectionViewDelegateFlo
 //        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
     }
-    override func viewWillAppear(_ animated: Bool) {
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
 
     // MARK: - UICollectionViewDataSource
 
@@ -55,13 +43,16 @@ class SwipingController: UICollectionViewController, UICollectionViewDelegateFlo
     
         let page = pages[indexPath.item]
         cell.page = page
+        if indexPath.item == pages.count - 1 {  // if this is the last page
+            cell.nextBtn.setTitle("Start!", for: .normal)
+        }
         
         return cell
     }
 
     // MARK: - UICollectionViewDelegate
 
-    // MARK: - Buttons Action
+    // MARK: - Buttons Action & Navigation
     
     
     @IBAction func backBtnPressed(_ sender: UIButton) {
@@ -78,6 +69,9 @@ class SwipingController: UICollectionViewController, UICollectionViewDelegateFlo
         let nextPage = min(hitIndex.item + 1, pages.count - 1)
         let nextIndex = IndexPath(item: nextPage, section: 0)
         collectionView.scrollToItem(at: nextIndex, at: .centeredHorizontally, animated: true)
+        if hitIndex.item == 2, sender.currentTitle == "Start!" {
+            performSegue(withIdentifier: "ShowCategory", sender: self)
+        }
     }
     
     

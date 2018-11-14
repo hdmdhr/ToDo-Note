@@ -17,10 +17,10 @@ class ToDoVC: SwipeTableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     var items: [ToDoItems] = []
-    var category : Category? {
+    var category : Category! {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
-            navigationItem.title = category?.name
+            navigationItem.title = category.name
         }
     }
 
@@ -33,13 +33,13 @@ class ToDoVC: SwipeTableViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
-//        guard let barColor = UIColor(hexString: category!.colorHex) else { fatalError() }
-        navBar.barTintColor = UIColor(hexString: category!.colorHex!)
+//        guard let barColor = UIColor(hexString: category.colorHex) else { fatalError() }
+        navBar.barTintColor = UIColor(hexString: category.colorHex!)
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
         navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
         
         
-        searchBar.barTintColor = UIColor(hexString: category!.colorHex!)
+        searchBar.barTintColor = UIColor(hexString: category.colorHex!)
     }
     
     //MARK: - Tableview Datasource
@@ -53,10 +53,13 @@ class ToDoVC: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath) as! MyTableViewCell
         
         cell.textLabel?.text = items[indexPath.row].title
-        let image = items[indexPath.row].done ? UIImage(named: "checked") : UIImage(named: "crossed")
-        cell.checkBox.setImage(image, for: .normal)
-        cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = UIColor(hexString: category!.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.2)
+        if items[indexPath.row].failed {
+            cell.checkBox.setImage(UIImage(named: "crossed"), for: .normal)
+        } else {
+            let image = items[indexPath.row].done ? UIImage(named: "checked") : UIImage(named: "empty")
+            cell.checkBox.setImage(image, for: .normal)
+        }
+        cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.2)
         cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         
         
@@ -80,16 +83,6 @@ class ToDoVC: SwipeTableViewController {
         }
     }
     
-    @IBAction func checkBoxPressed(_ sender: UIButton) {
-        let hitPoint = sender.convert(CGPoint.zero, to: tableView)
-        guard let hitIndex = tableView.indexPathForRow(at: hitPoint) else { fatalError("cannot find hit index") }
-        
-        items[hitIndex.row].done = !items[hitIndex.row].done
-        
-        saveItems()
-        tableView.reloadData()
-    }
-    
     // MARK: - Add New Items
     
     @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
@@ -103,7 +96,8 @@ class ToDoVC: SwipeTableViewController {
             let newItem = ToDoItems(context: self.context)
             newItem.title = textField.text
             newItem.done = false
-            newItem.parentCategory = self.category!
+            newItem.failed = false
+            newItem.parentCategory = self.category
             
             self.saveItems()
             self.loadItemsUnderCurrentCategory()
@@ -120,8 +114,9 @@ class ToDoVC: SwipeTableViewController {
         
     }
     
+    // MARK: - Swipe Functions
     
-    // MARK: - Delete Data by Swipe to Left
+    // MARK:  Delete Data by Swipe to Left
     
     override func updateModel(at indexPath: IndexPath) {
         context.delete(items[indexPath.row])
@@ -130,17 +125,44 @@ class ToDoVC: SwipeTableViewController {
         tableView.reloadData()
     }
     
-    // MARK: - Change Color by Swipe to Right
+    // MARK: Mark Item as Failed
+    
+    override func failingItemAt(_ indexPath: IndexPath) {
+        items[indexPath.row].failed = !items[indexPath.row].failed
+        saveItems()
+        tableView.reloadData()
+    }
+    
+    // MARK:  Change Color
     
     override func changeColor(at indexPath: IndexPath) {
 
-        let index = Settings.palletHex.firstIndex(of: category!.colorHex!)!
-        category!.colorHex = Settings.palletHex[(index + 1) % Settings.palletHex.count]
+        let index = Settings.palletHex.firstIndex(of: category.colorHex!)!
+        category.colorHex = Settings.palletHex[(index + 1) % Settings.palletHex.count]
         saveItems()
+        let cells = tableView.visibleCells
+        for cell in cells {
+            cell.backgroundColor = HexColor(category.colorHex!)
+        }
         
-        tableView.reloadData()
         viewWillAppear(true)
-
+    }
+    
+    // MARK: - User Tapped Checkbox
+    
+    @IBAction func checkBoxPressed(_ sender: UIButton) {
+        let hitPoint = sender.convert(CGPoint.zero, to: tableView)
+        guard let hitIndex = tableView.indexPathForRow(at: hitPoint) else { fatalError("cannot find hit index") }
+        
+        if items[hitIndex.row].failed {
+            items[hitIndex.row].failed = false
+            items[hitIndex.row].done = false
+        } else {
+            items[hitIndex.row].done = !items[hitIndex.row].done
+        }
+        
+        saveItems()
+        tableView.reloadData()
     }
     
     
@@ -156,7 +178,7 @@ class ToDoVC: SwipeTableViewController {
     }
     
     func loadItemsUnderCurrentCategory(with request: NSFetchRequest<ToDoItems> = ToDoItems.fetchRequest(), _ predicate: NSPredicate? = nil){
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", category!.name!)
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", category.name!)
         
         if let predicate = predicate {
             let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])

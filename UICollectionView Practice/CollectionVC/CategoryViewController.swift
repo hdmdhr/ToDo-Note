@@ -23,11 +23,6 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             UserDefaults.standard.set(sizeSetter, forKey: "categorySize")  // save category size
         }
     }
-    var currentBtnNumber: CGFloat {
-        get{
-            return CGFloat(sizeSetter)
-        }
-    }
     
     var categories: [Category] = []
 
@@ -120,7 +115,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     // MARK: Set cell size
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width/currentBtnNumber - 5, height: UIScreen.main.bounds.width/currentBtnNumber - 5)
+        return CGSize(width: UIScreen.main.bounds.width/CGFloat(sizeSetter) - 5, height: UIScreen.main.bounds.width/CGFloat(sizeSetter) - 5)
     }
     
     // MARK: Move cells
@@ -204,22 +199,26 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
         guard let hitIndex = collectionView.indexPathForItem(at: hitPoint) else { fatalError("cannot find tapped index") }
         
-        let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete all items and notes under the selected category", preferredStyle: .alert)
-        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-            self.deleteDataWithHitIndex(hitIndex)
-        })
-        
-        alert.addAction(deleteAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
+        if categories[hitIndex.row].itemsToDo?.count == 0 {
+            deleteDataWithHitIndex(hitIndex)  // if category has no item, delete without alert
+        } else {
+            let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete all items and notes under the selected category", preferredStyle: .alert)
+            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+                self.deleteDataWithHitIndex(hitIndex)
+            })
+            
+            alert.addAction(deleteAction)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func deleteDataWithHitIndex(_ hitIndex: IndexPath) {
         if categories[hitIndex.row].name != "+" {
             let itemsUnderCategory = categories[hitIndex.row].itemsToDo?.allObjects as! [ToDoItems]
             for item in itemsUnderCategory {
-                context.delete(item)
+                context.delete(item)  // delete all items under category first
             }
             context.delete(categories[hitIndex.row])
             categories.remove(at: hitIndex.row)

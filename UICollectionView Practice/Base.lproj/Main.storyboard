@@ -310,6 +310,7 @@
                                 <connections>
                                     <outlet property="bodyTextView" destination="xUL-YR-Jp0" id="TYq-w3-6kD"/>
                                     <outlet property="headerLabel" destination="uwe-S6-5R1" id="WUB-6i-NhR"/>
+                                    <outlet property="nextBtn" destination="2ni-3r-kDT" id="BYp-tw-hlv"/>
                                     <outlet property="pageControl" destination="MSC-Ez-Vg2" id="mgt-SA-U37"/>
                                     <outlet property="pageImage" destination="aoA-Pn-PDb" id="vAp-MF-F4N"/>
                                 </connections>
@@ -320,10 +321,13 @@
                             <outlet property="delegate" destination="SRE-Pw-qYF" id="jEF-o4-ggV"/>
                         </connections>
                     </collectionView>
+                    <connections>
+                        <segue destination="PTQ-BZ-KRg" kind="show" identifier="ShowCategory" id="il4-lG-adw"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Io-el-eYC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="118.84057971014494" y="847.01086956521749"/>
+            <point key="canvasLocation" x="-683" y="132"/>
         </scene>
         <!--ToDoItems-->
         <scene sceneID="pX0-u5-7cx">

@@ -29,4 +29,5 @@ class PageCell: UICollectionViewCell {
     
     @IBOutlet weak var pageControl: UIPageControl!
     
+    @IBOutlet weak var nextBtn: UIButton!
 }

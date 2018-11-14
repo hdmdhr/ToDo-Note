@@ -24,14 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         
-        if !launchedBefore  {
+        if launchedBefore  {
             print("Not first launch.")
             let navigationVC = mainStoryboard.instantiateViewController(withIdentifier: "navigationVC") as! UINavigationController
             self.window?.rootViewController = navigationVC
         } else {
             // TODO: - Go to tutorial VC
             print("First launch, set UserDefault and category size.")
-            UserDefaults.standard.set(2, forKey: "categorySize")
+            UserDefaults.standard.set(3, forKey: "categorySize")
             UserDefaults.standard.set(true, forKey: "launchedBefore")
             let tutorialVC = mainStoryboard.instantiateViewController(withIdentifier: "tutorialVC") as! SwipingController
             self.window?.rootViewController = tutorialVC

@@ -24,6 +24,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         
         cell.delegate = self
         
+        cell.accessoryType = .disclosureIndicator
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
         
@@ -48,16 +49,21 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
             self.present(alert, animated: true, completion: nil)
         }
         
+        let failAction = SwipeAction(style: .default, title: "Failed") { (_, indexPath) in
+            self.failingItemAt(indexPath)
+        }
+        
         let changeColorAction = SwipeAction(style: .default, title: "Change") { action, indexPath in
             self.changeColor(at: indexPath)  // Change color and update database
         }
         
         // customize the action appearance
         deleteAction.image = UIImage(named: "trash-Icon")
+        failAction.image = UIImage(named: "small-cross")
         changeColorAction.image = UIImage(named: "color-wheel")
-        changeColorAction.backgroundColor = FlatWhiteDark()
+        failAction.backgroundColor = FlatWhiteDark()
         
-        return [deleteAction, changeColorAction]
+        return [deleteAction, failAction,changeColorAction]
     }
     
     // MARK: Swipe far enough to delete
@@ -74,6 +80,10 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     // MARK: - Convenient Methods
     
     func updateModel(at indexPath: IndexPath) {
+        
+    }
+    
+    func failingItemAt(_ indexPath: IndexPath) {
         
     }
     
