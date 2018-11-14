@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CategoryViewController.swift
 //  UICollectionView Practice
 //
 //  Created by 胡洞明 on 2018/9/25.
@@ -10,23 +10,25 @@ import UIKit
 import CoreData
 import ChameleonFramework
 
-class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class CategoryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var navBarBtn: UIBarButtonItem!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    let btnSizes = [2:2, 3:3, 4:4]
-    var sizeSetter = 2 {
+    
+    var sizeSetter = UserDefaults.standard.integer(forKey: "categorySize") {
         didSet{
             if sizeSetter > 4 { sizeSetter = 4 } else if sizeSetter < 2 { sizeSetter = 2 }
+            UserDefaults.standard.set(sizeSetter, forKey: "categorySize")  // save category size
         }
     }
     var currentBtnNumber: CGFloat {
         get{
-            return CGFloat(btnSizes[sizeSetter]!)
+            return CGFloat(sizeSetter)
         }
     }
+    
     var categories: [Category] = []
 
     var longPressEnabled = false {
@@ -287,7 +289,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
 
 // MARK: - Gesture handling
 
-extension CollectionViewController {
+extension CategoryViewController {
     
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
         

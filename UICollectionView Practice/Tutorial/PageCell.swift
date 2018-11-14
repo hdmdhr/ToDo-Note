@@ -7,8 +7,19 @@
 //
 
 import UIKit
+import ChameleonFramework
 
 class PageCell: UICollectionViewCell {
+    
+    var page: Page? {
+        didSet{
+            guard let page = page else { return }
+            pageImage.image = UIImage(named: page.imageName)
+            headerLabel.text = page.headerText
+            bodyTextView.text = page.bodyText
+            pageControl.currentPage = page.currentPage
+        }
+    }
     
     @IBOutlet weak var pageImage: UIImageView!
     
@@ -17,4 +28,5 @@ class PageCell: UICollectionViewCell {
     @IBOutlet weak var bodyTextView: UITextView!
     
     @IBOutlet weak var pageControl: UIPageControl!
+    
 }
