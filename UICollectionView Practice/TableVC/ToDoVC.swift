@@ -17,6 +17,7 @@ class ToDoVC: SwipeTableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     var items: [ToDoItems] = []
+    var sorttedItems: [[ToDoItems]] = [[],[],[]]
     var category : Category! {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
@@ -53,12 +54,16 @@ class ToDoVC: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath) as! MyTableViewCell
         
         cell.textLabel?.text = items[indexPath.row].title
-        if items[indexPath.row].failed {
-            cell.checkBox.setImage(UIImage(named: "crossed"), for: .normal)
-        } else {
-            let image = items[indexPath.row].done ? UIImage(named: "checked") : UIImage(named: "empty")
-            cell.checkBox.setImage(image, for: .normal)
-        }
+
+            switch items[indexPath.row].done {
+            case "failed":
+                cell.checkBox.setImage(UIImage(named: "crossed"), for: .normal)
+            case "done":
+                cell.checkBox.setImage(UIImage(named: "checked"), for: .normal)
+            default:
+                cell.checkBox.setImage(UIImage(named: "empty"), for: .normal)
+            }
+        
         cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.15)
         cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         
@@ -95,8 +100,7 @@ class ToDoVC: SwipeTableViewController {
             // Create newItem，Set its properties，Save
             let newItem = ToDoItems(context: self.context)
             newItem.title = textField.text
-            newItem.done = false
-            newItem.failed = false
+            newItem.done = "todo"
             newItem.parentCategory = self.category
             
             self.saveItems()
@@ -128,7 +132,11 @@ class ToDoVC: SwipeTableViewController {
     // MARK: Mark Item as Failed
     
     override func failingItemAt(_ indexPath: IndexPath) {
-        items[indexPath.row].failed = !items[indexPath.row].failed
+        if items[indexPath.row].done == "failed" {
+            items[indexPath.row].done = "todo"
+        } else {
+            items[indexPath.row].done = "failed"
+        }
         saveItems()
         tableView.reloadRows(at: [indexPath], with: .left)
     }
@@ -155,16 +163,17 @@ class ToDoVC: SwipeTableViewController {
     @IBAction func checkBoxPressed(_ sender: UIButton) {
         let hitPoint = sender.convert(CGPoint.zero, to: tableView)
         guard let hitIndex = tableView.indexPathForRow(at: hitPoint) else { fatalError("cannot find hit index") }
-        
-        if items[hitIndex.row].failed {
-            items[hitIndex.row].failed = false
-            items[hitIndex.row].done = false
-        } else {
-            items[hitIndex.row].done = !items[hitIndex.row].done
+        switch items[hitIndex.row].done {
+        case "todo":
+            items[hitIndex.row].done = "done"
+        case "done":
+            items[hitIndex.row].done = "todo"
+        default:
+            items[hitIndex.row].done = "todo"
         }
         
         saveItems()
-        tableView.reloadData()
+        tableView.reloadRows(at: [hitIndex], with: .fade)
     }
     
     
@@ -193,6 +202,19 @@ class ToDoVC: SwipeTableViewController {
             items = try context.fetch(request)
         } catch {
             fatalError("Error fetching data, \(error)")
+        }
+        
+        for item in items {
+            switch item.done {
+            case "todo":
+                sorttedItems[0].append(item)
+            case "done":
+                sorttedItems[1].append(item)
+            case "failed":
+                sorttedItems[2].append(item)
+            default:
+                break
+            }
         }
         
             tableView.reloadData()

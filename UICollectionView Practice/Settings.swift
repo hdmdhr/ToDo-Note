@@ -11,13 +11,13 @@ import ChameleonFramework
 
 struct Settings {
     static let palletHex: [String] =
-        [FlatWatermelon().hexValue(),
-         FlatPink().hexValue(),
-         FlatOrange().hexValue(),
-         FlatYellow().hexValue(),
-         FlatGreen().hexValue(),
-         FlatLime().hexValue(),
-         FlatSkyBlue().hexValue(),
-         FlatMagenta().hexValue(),
-         FlatPurple().hexValue()]
+        [         FlatPink().hexValue(),
+                  FlatWatermelon().hexValue(),
+                  FlatOrange().hexValue(),
+                  FlatYellow().hexValue(),
+                  FlatGreen().hexValue(),
+                  FlatLime().hexValue(),
+                  FlatSkyBlue().hexValue(),
+                  FlatMagenta().hexValue(),
+                  FlatPurple().hexValue()]
 }
