@@ -62,6 +62,9 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             add.dateCreated = Date()
             add.colorHex = FlatWhiteDark().hexValue()
             add.order = 0
+            add.toDoExpanded = true
+            add.doneExpanded = true
+            add.failedExpanded = true
             categories.append(add)
         }
         
@@ -126,9 +129,6 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
-        print("Start index: \(sourceIndexPath.item)")
-        print("End index: \(destinationIndexPath.item)")
-        
         let temp = categories.remove(at: sourceIndexPath.item)
         categories.insert(temp, at: destinationIndexPath.item)
         // Whenever reorder happens, give all categories a new order number
@@ -176,6 +176,9 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             newCategory.colorHex = Settings.palletHex[self.categories.count % Settings.palletHex.count]
             newCategory.dateCreated = Date()
             newCategory.order = self.categories[0].order + 1
+            newCategory.toDoExpanded = true
+            newCategory.doneExpanded = true
+            newCategory.failedExpanded = true
             self.categories.insert(newCategory, at: 0)
             
             self.saveData()

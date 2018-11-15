@@ -3,8 +3,11 @@
     <entity name="Category" representedClassName=".Category" syncable="YES" codeGenerationType="class">
         <attribute name="colorHex" attributeType="String" syncable="YES"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="doneExpanded" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="failedExpanded" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="order" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="toDoExpanded" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="itemsToDo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ToDoItems" inverseName="parentCategory" inverseEntity="ToDoItems" syncable="YES"/>
     </entity>
     <entity name="ToDoItems" representedClassName=".ToDoItems" syncable="YES" codeGenerationType="class">
@@ -13,7 +16,7 @@
         <relationship name="parentCategory" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="itemsToDo" inverseEntity="Category" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Category" positionX="-2042.2265625" positionY="-1358.875" width="128" height="120"/>
+        <element name="Category" positionX="-2042.2265625" positionY="-1358.875" width="128" height="165"/>
         <element name="ToDoItems" positionX="-2331.8203125" positionY="-1328.9921875" width="128" height="90"/>
     </elements>
 </model>

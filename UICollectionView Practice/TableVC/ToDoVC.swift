@@ -54,35 +54,40 @@ class ToDoVC: SwipeTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
+        let headerView = UIView()
         switch sorttedItems[section].items.first?.done {
         case "ToDo":
-            view.backgroundColor = FlatBlue()
+            headerView.backgroundColor = FlatBlue()
         case "Done":
-            view.backgroundColor = FlatMint()
+            headerView.backgroundColor = FlatMint()
         case "Failed":
-            view.backgroundColor = FlatGray()
+            headerView.backgroundColor = FlatGray()
         default:
             break
         }
-    
-        let button = UIButton(type: .system)
-        button.setTitle("collapse", for: .normal)
-        button.frame = CGRect(x: UIScreen.main.bounds.width - 80, y: 5, width: 80, height: 30)
-        button.tintColor = FlatWhite()
-        button.titleLabel?.font = UIFont.italicSystemFont(ofSize: 12)
-        button.tag = section
-        button.addTarget(self, action: #selector(expandCollaspseBtnPressed), for: .touchUpInside)
-        view.addSubview(button)
         
         let label = UILabel()
         label.text = sorttedItems[section].items.first?.done
         label.textColor = FlatWhite()
         label.font = UIFont.systemFont(ofSize: 18)
         label.frame = CGRect(x: 10, y: 5, width: 80, height: 30)
-        view.addSubview(label)
+        headerView.addSubview(label)
+    
+        let button = UIButton(type: .system)
+        let isExpanded = sorttedItems[section].isExpanded
+        button.setTitle(isExpanded ? "Collapse" : "Expand", for: .normal)
+        if button.currentTitle == "Expand" {
+            button.tintColor = FlatWhite()
+        } else {
+            button.tintColor = FlatWhite().darken(byPercentage: 0.2)
+        }
+        button.frame = CGRect(x: UIScreen.main.bounds.width - 80, y: 5, width: 80, height: 30)
+        button.titleLabel?.font = UIFont.italicSystemFont(ofSize: 12)
+        button.tag = section
+        button.addTarget(self, action: #selector(expandCollaspseBtnPressed), for: .touchUpInside)
+        headerView.addSubview(button)
 
-        return view
+        return headerView
     }
     
     @objc func expandCollaspseBtnPressed(button: UIButton){
@@ -97,12 +102,23 @@ class ToDoVC: SwipeTableViewController {
         
         let isExpanded = sorttedItems[section].isExpanded
         sorttedItems[section].isExpanded = !sorttedItems[section].isExpanded
+        switch sorttedItems[section].items.first?.done {
+        case "ToDo":
+            category.toDoExpanded = sorttedItems[section].isExpanded
+        case "Done":
+            category.doneExpanded = sorttedItems[section].isExpanded
+        case "Failed":
+            category.failedExpanded = sorttedItems[section].isExpanded
+        default:
+            break
+        }
+        saveItems()
         
         button.setTitle(isExpanded ? "Expand" : "Collapse", for: .normal)
         if button.currentTitle == "Expand" {
-            button.tintColor = FlatWhite().darken(byPercentage: 0.15)
-        } else {
             button.tintColor = FlatWhite()
+        } else {
+            button.tintColor = FlatWhite().darken(byPercentage: 0.2)
         }
 
         if isExpanded {
@@ -304,6 +320,11 @@ class ToDoVC: SwipeTableViewController {
                 break
             }
         }
+        
+        todoItems.isExpanded = category.toDoExpanded
+        doneItems.isExpanded = category.doneExpanded
+        failedItems.isExpanded = category.failedExpanded
+        
         if !todoItems.items.isEmpty { sorttedItems.append(todoItems) }
         if !doneItems.items.isEmpty { sorttedItems.append(doneItems) }
         if !failedItems.items.isEmpty { sorttedItems.append(failedItems) }
