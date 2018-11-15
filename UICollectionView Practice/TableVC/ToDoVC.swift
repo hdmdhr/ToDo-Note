@@ -16,8 +16,13 @@ class ToDoVC: SwipeTableViewController {
  let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBOutlet weak var searchBar: UISearchBar!
-    var items: [ToDoItems] = []
-    var sorttedItems: [[ToDoItems]] = [[],[],[]]
+    
+    private var items: [ToDoItems] = []
+    private var sorttedItems: [ExpandableItems] = []
+    private var todoItems = ExpandableItems(items: [], isExpanded: true)
+    private var doneItems = ExpandableItems(items: [], isExpanded: true)
+    private var failedItems = ExpandableItems(items: [], isExpanded: true)
+    
     var category : Category! {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
@@ -27,7 +32,6 @@ class ToDoVC: SwipeTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-                
         
     }
     
@@ -43,29 +47,105 @@ class ToDoVC: SwipeTableViewController {
         searchBar.barTintColor = HexColor(category.colorHex!)
     }
     
+    // MARK: - Table Header Appearance
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+        switch sorttedItems[section].items.first?.done {
+        case "ToDo":
+            view.backgroundColor = FlatBlue()
+        case "Done":
+            view.backgroundColor = FlatMint()
+        case "Failed":
+            view.backgroundColor = FlatGray()
+        default:
+            break
+        }
+    
+        let button = UIButton(type: .system)
+        button.setTitle("collapse", for: .normal)
+        button.frame = CGRect(x: UIScreen.main.bounds.width - 80, y: 5, width: 80, height: 30)
+        button.tintColor = FlatWhite()
+        button.titleLabel?.font = UIFont.italicSystemFont(ofSize: 12)
+        button.tag = section
+        button.addTarget(self, action: #selector(expandCollaspseBtnPressed), for: .touchUpInside)
+        view.addSubview(button)
+        
+        let label = UILabel()
+        label.text = sorttedItems[section].items.first?.done
+        label.textColor = FlatWhite()
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.frame = CGRect(x: 10, y: 5, width: 80, height: 30)
+        view.addSubview(label)
+
+        return view
+    }
+    
+    @objc func expandCollaspseBtnPressed(button: UIButton){
+        let section = button.tag
+        
+        var indexPaths = [IndexPath]()
+        
+        for row in sorttedItems[section].items.indices {
+            let indexPath = IndexPath(row: row, section: section)
+            indexPaths.append(indexPath)
+        }
+        
+        let isExpanded = sorttedItems[section].isExpanded
+        sorttedItems[section].isExpanded = !sorttedItems[section].isExpanded
+        
+        button.setTitle(isExpanded ? "Expand" : "Collapse", for: .normal)
+        if button.currentTitle == "Expand" {
+            button.tintColor = FlatWhite().darken(byPercentage: 0.15)
+        } else {
+            button.tintColor = FlatWhite()
+        }
+
+        if isExpanded {
+            tableView.deleteRows(at: indexPaths, with: .fade)
+        } else {
+            tableView.insertRows(at: indexPaths, with: .fade)
+        }
+    }
+    
+    
     //MARK: - Tableview Datasource
+
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return sorttedItems.count
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        if !sorttedItems[section].isExpanded {
+            return 0
+        }
+        
+        return sorttedItems[section].items.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath) as! MyTableViewCell
         
-        cell.textLabel?.text = items[indexPath.row].title
+        let item = sorttedItems[indexPath.section].items[indexPath.row]
+        cell.textLabel?.text = item.title
 
-            switch items[indexPath.row].done {
-            case "failed":
+            switch item.done {
+            case "Failed":
                 cell.checkBox.setImage(UIImage(named: "crossed"), for: .normal)
-            case "done":
+            case "Done":
                 cell.checkBox.setImage(UIImage(named: "checked"), for: .normal)
             default:
                 cell.checkBox.setImage(UIImage(named: "empty"), for: .normal)
             }
         
-        cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(items.count)) * 0.15)
-        cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
+        cell.backgroundColor = UIColor(hexString: category.colorHex!)!.darken(byPercentage: (CGFloat(indexPath.row) / CGFloat(sorttedItems[indexPath.section].items.count)) * 0.15)
+        cell.textLabel?.textColor = ContrastColorOf(tableView.backgroundColor!, returnFlat: true)
         
         
         return cell
@@ -84,7 +164,7 @@ class ToDoVC: SwipeTableViewController {
         if segue.identifier == "ShowNotes" {
             let noteVC = segue.destination as! NotesVC
             guard let index = tableView.indexPathForSelectedRow else {fatalError("No selected row")}
-            noteVC.currentItem = items[index.row]
+            noteVC.currentItem = sorttedItems[index.section].items[index.row]
         }
     }
     
@@ -100,7 +180,7 @@ class ToDoVC: SwipeTableViewController {
             // Create newItem，Set its properties，Save
             let newItem = ToDoItems(context: self.context)
             newItem.title = textField.text
-            newItem.done = "todo"
+            newItem.done = "ToDo"
             newItem.parentCategory = self.category
             
             self.saveItems()
@@ -123,22 +203,23 @@ class ToDoVC: SwipeTableViewController {
     // MARK:  Delete Data by Swipe to Left
     
     override func updateModel(at indexPath: IndexPath) {
-        context.delete(items[indexPath.row])
-        items.remove(at: indexPath.row)
+        context.delete(sorttedItems[indexPath.section].items[indexPath.row])
+        sorttedItems[indexPath.section].items.remove(at: indexPath.row)
         saveItems()
-        tableView.reloadData()
+        loadItemsUnderCurrentCategory()
     }
     
     // MARK: Mark Item as Failed
     
     override func failingItemAt(_ indexPath: IndexPath) {
-        if items[indexPath.row].done == "failed" {
-            items[indexPath.row].done = "todo"
+        if sorttedItems[indexPath.section].items[indexPath.row].done == "Failed" {
+            sorttedItems[indexPath.section].items[indexPath.row].done = "ToDo"
         } else {
-            items[indexPath.row].done = "failed"
+            sorttedItems[indexPath.section].items[indexPath.row].done = "Failed"
         }
         saveItems()
-        tableView.reloadRows(at: [indexPath], with: .left)
+        tableView.reloadRows(at: [indexPath], with: .right)
+        loadItemsUnderCurrentCategory()
     }
     
     // MARK:  Change Color
@@ -163,17 +244,19 @@ class ToDoVC: SwipeTableViewController {
     @IBAction func checkBoxPressed(_ sender: UIButton) {
         let hitPoint = sender.convert(CGPoint.zero, to: tableView)
         guard let hitIndex = tableView.indexPathForRow(at: hitPoint) else { fatalError("cannot find hit index") }
-        switch items[hitIndex.row].done {
-        case "todo":
-            items[hitIndex.row].done = "done"
-        case "done":
-            items[hitIndex.row].done = "todo"
+        switch sorttedItems[hitIndex.section].items[hitIndex.row].done {
+        case "ToDo":
+            sorttedItems[hitIndex.section].items[hitIndex.row].done = "Done"
+        case "Done":
+            sorttedItems[hitIndex.section].items[hitIndex.row].done = "ToDo"
         default:
-            items[hitIndex.row].done = "todo"
+            sorttedItems[hitIndex.section].items[hitIndex.row].done = "ToDo"
         }
         
         saveItems()
-        tableView.reloadRows(at: [hitIndex], with: .fade)
+        
+        loadItemsUnderCurrentCategory()
+
     }
     
     
@@ -203,21 +286,32 @@ class ToDoVC: SwipeTableViewController {
         } catch {
             fatalError("Error fetching data, \(error)")
         }
+
+        todoItems.items.removeAll()
+        doneItems.items.removeAll()
+        failedItems.items.removeAll()
+        sorttedItems.removeAll()
         
         for item in items {
             switch item.done {
-            case "todo":
-                sorttedItems[0].append(item)
-            case "done":
-                sorttedItems[1].append(item)
-            case "failed":
-                sorttedItems[2].append(item)
+            case "ToDo":
+                todoItems.items.append(item)
+            case "Done":
+                doneItems.items.append(item)
+            case "Failed":
+                failedItems.items.append(item)
             default:
                 break
             }
         }
-        
-            tableView.reloadData()
+        if !todoItems.items.isEmpty { sorttedItems.append(todoItems) }
+        if !doneItems.items.isEmpty { sorttedItems.append(doneItems) }
+        if !failedItems.items.isEmpty { sorttedItems.append(failedItems) }
+
+        UIView.transition(with: tableView, duration: 1, options: .curveEaseInOut, animations: {
+            self.tableView.reloadData()
+        }, completion: nil)
+//            tableView.reloadData()
         }
 
 }
