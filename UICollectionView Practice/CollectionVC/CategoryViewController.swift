@@ -121,27 +121,8 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         return CGSize(width: UIScreen.main.bounds.width/CGFloat(sizeSetter) - 5, height: UIScreen.main.bounds.width/CGFloat(sizeSetter) - 5)
     }
     
-    // MARK: Move cells
-    
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-        let temp = categories.remove(at: sourceIndexPath.item)
-        categories.insert(temp, at: destinationIndexPath.item)
-        // Whenever reorder happens, give all categories a new order number
-        var i = categories.count
-        for category in categories {
-            category.order = Int32(i - 1)
-            i -= 1
-        }
-        
-        saveData()
-    }
-    
     // MARK: - Add/Delete/Edit/Change categories & Navigation
+    
     var tappedCategory: Category?
     
     @IBAction func roundButtonPressed(_ sender: RoundButton) {
@@ -289,9 +270,27 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     
 }
 
-// MARK: - Gesture handling
+// MARK: - Gesture to Move Cells
 
 extension CategoryViewController {
+    
+    //    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+    //        return longPressEnabled ? true : false
+    //    }  --- No Longer Needed Because of The Following Methond ---
+    
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        let temp = categories.remove(at: sourceIndexPath.item)
+        categories.insert(temp, at: destinationIndexPath.item)
+        // Whenever reorder happens, give all categories a new order number
+        var i = categories.count
+        for category in categories {
+            category.order = Int32(i - 1)
+            i -= 1
+        }
+        
+        saveData()
+    }
     
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
         
@@ -312,23 +311,23 @@ extension CategoryViewController {
         }
     }
     
-    @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
-        
-        if longPressEnabled {
-            switch gesture.state {
-            case .began:
-                guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { break }
-                
-                collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
-            case .changed:
-                collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
-                
-            case .ended:
-                collectionView.endInteractiveMovement()
-                
-            default:
-                collectionView.cancelInteractiveMovement()
-            }
-        }
-    }
+//    @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
+//
+//        if longPressEnabled {
+//            switch gesture.state {
+//            case .began:
+//                guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { break }
+//
+//                collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+//            case .changed:
+//                collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+//
+//            case .ended:
+//                collectionView.endInteractiveMovement()
+//
+//            default:
+//                collectionView.cancelInteractiveMovement()
+//            }
+//        }
+//    }
 }
