@@ -83,8 +83,8 @@ class ToDoVC: SwipeTableViewController {
     
         let button = UIButton(type: .system)
         let isExpanded = sortedItems[section].isExpanded
-        button.setTitle(isExpanded ? "Collapse" : "Expand", for: .normal)
-        if button.currentTitle == "Expand" {
+        button.setTitle(isExpanded ? "Hide" : "Show", for: .normal)
+        if button.currentTitle == "Show" {
             button.tintColor = FlatWhite()
         } else {
             button.tintColor = FlatWhite().darken(byPercentage: 0.2)
@@ -122,8 +122,8 @@ class ToDoVC: SwipeTableViewController {
         }
         saveItems()
         
-        button.setTitle(isExpanded ? "Expand" : "Collapse", for: .normal)
-        if button.currentTitle == "Expand" {
+        button.setTitle(isExpanded ? "Show" : "Hide", for: .normal)
+        if button.currentTitle == "Show" {
             button.tintColor = FlatWhite()
         } else {
             button.tintColor = FlatWhite().darken(byPercentage: 0.2)

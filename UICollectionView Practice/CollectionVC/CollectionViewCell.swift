@@ -26,6 +26,11 @@ class CollectionViewCell: UICollectionViewCell {
         //        print("cell size: \(bounds.size)")
     }
     
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+            roundBtn.titleLabel?.adjustsFontSizeToFitWidth = true
+    }
+    
 //    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
 //        setNeedsLayout()
 //        layoutIfNeeded()

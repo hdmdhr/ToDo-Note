@@ -37,13 +37,13 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z6n-ij-hj5">
                                                     <rect key="frame" x="0.0" y="0.0" width="190" height="190"/>
                                                     <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2UY-eb-n4F" customClass="RoundButton" customModule="UICollectionView_Practice" customModuleProvider="target">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2UY-eb-n4F" customClass="RoundButton" customModule="UICollectionView_Practice" customModuleProvider="target">
                                                             <rect key="frame" x="23.666666666666671" y="23.666666666666671" width="142.66666666666663" height="142.66666666666663"/>
                                                             <color key="backgroundColor" red="0.94509803920000002" green="0.76862745099999996" blue="0.058823529409999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" secondItem="2UY-eb-n4F" secondAttribute="height" multiplier="1:1" id="uih-29-VUD"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="24"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                             <connections>
                                                                 <action selector="roundButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cna-G9-a3J"/>
                                                             </connections>

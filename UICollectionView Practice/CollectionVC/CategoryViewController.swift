@@ -29,14 +29,12 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     var longPressEnabled = false {
         didSet{
             let cells = collectionView.visibleCells as! [CollectionViewCell]
-            if longPressEnabled {
-                navBarBtn.title = "Done"
-                for cell in cells {
+            for cell in cells {
+                if longPressEnabled {
+                    navBarBtn.title = "Done"
                     cell.startAnimate()
-                }
-            } else {
-                navBarBtn.title = "Edit"
-                for cell in cells {
+                } else {
+                    navBarBtn.title = "Edit"
                     cell.stopAnimate()
                 }
             }
@@ -97,7 +95,10 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
 //        cell.backgroundColor = HexColor("9A9A9A", 0.25)
-//        cell.roundBtn.layer.cornerRadius = 0.4 * (UIScreen.main.bounds.width/currentBtnNumber - 5) * 3 / 4
+        cell.roundBtn.setImage(nil, for: .normal)
+        if categories[indexPath.item].name == "+" {
+            cell.roundBtn.setImage(UIImage(named: "add"), for: .normal)
+        }
         cell.layer.borderWidth = 1
         cell.layer.borderColor = FlatGray().withAlphaComponent(0.15).cgColor
         cell.roundBtn.setTitle(categories[indexPath.item].name, for: .normal)
@@ -163,8 +164,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             self.categories.insert(newCategory, at: 0)
             
             self.saveData()
-            self.collectionView.reloadData()
-            
+            self.collectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
         }
         
         alert.addTextField { (field) in
@@ -207,7 +207,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             context.delete(categories[hitIndex.row])
             categories.remove(at: hitIndex.row)
             saveData()
-            collectionView.reloadData()
+            collectionView.deleteItems(at: [hitIndex])
         }
     }
     
@@ -239,6 +239,10 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             return
         }
         collectionView.layoutIfNeeded()
+//        let cells = collectionView.visibleCells as! [CollectionViewCell]
+//        for cell in cells {
+//            cell.roundBtn.titleLabel?.adjustsFontSizeToFitWidth
+//        }
     }
     
     @IBAction func navBarBtnPressed(_ sender: UIBarButtonItem) {
