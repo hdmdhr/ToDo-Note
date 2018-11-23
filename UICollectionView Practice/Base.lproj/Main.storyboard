@@ -169,17 +169,31 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="FV0-r2-3QI"/>
                                 </connections>
                             </collectionView>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiE-sK-KUP" userLabel="50%Veil">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="CiE-sK-KUP" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="5Xg-sg-lE8"/>
+                            <constraint firstItem="CiE-sK-KUP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Fci-EF-Sqb"/>
                             <constraint firstItem="J2G-DM-bGw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Jy2-Ht-gzo"/>
                             <constraint firstItem="J2G-DM-bGw" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="NCy-F0-75b"/>
                             <constraint firstItem="J2G-DM-bGw" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="RQz-Xy-u1l"/>
                             <constraint firstItem="J2G-DM-bGw" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="cGd-fC-zhs"/>
+                            <constraint firstItem="CiE-sK-KUP" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="gqi-va-7Mc"/>
+                            <constraint firstItem="CiE-sK-KUP" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="hff-MY-iU9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Categories" id="r63-Nc-ho4">
+                        <barButtonItem key="leftBarButtonItem" image="menu" id="m5G-1c-tT4">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="menuBtnPressed:" destination="BYZ-38-t0r" id="8PN-m0-WZC"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" id="B4d-J2-rag">
                             <connections>
                                 <action selector="navBarBtnPressed:" destination="BYZ-38-t0r" id="17b-Hk-BQO"/>
@@ -190,12 +204,41 @@
                     <connections>
                         <outlet property="collectionView" destination="J2G-DM-bGw" id="8Cy-WC-krr"/>
                         <outlet property="navBarBtn" destination="B4d-J2-rag" id="FuP-MI-WwV"/>
+                        <outlet property="veil" destination="CiE-sK-KUP" id="bhI-sZ-JND"/>
                         <segue destination="aBZ-xO-cug" kind="show" identifier="ShowItems" id="qAK-0a-oNf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1017" y="132"/>
+            <point key="canvasLocation" x="1015.9420289855074" y="131.25"/>
+        </scene>
+        <!--Menu Table Controller-->
+        <scene sceneID="lpk-9P-Ske">
+            <objects>
+                <tableViewController id="nzf-Q2-lvL" customClass="MenuTableController" customModule="UICollectionView_Practice" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="X9C-bZ-PGd">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MenuCell" id="Bpm-Cr-50W">
+                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bpm-Cr-50W" id="Xhj-px-ee5">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="nzf-Q2-lvL" id="j0j-s7-cRY"/>
+                            <outlet property="delegate" destination="nzf-Q2-lvL" id="qqs-u4-ug2"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="he5-uy-vby" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1025" y="834"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YI8-pK-l9X">
@@ -450,6 +493,7 @@
         <image name="color-wheel" width="60" height="60"/>
         <image name="crossed" width="250" height="250"/>
         <image name="empty" width="262" height="262"/>
+        <image name="menu" width="24" height="24"/>
         <image name="minus" width="250" height="250"/>
         <image name="plus" width="250" height="250"/>
     </resources>

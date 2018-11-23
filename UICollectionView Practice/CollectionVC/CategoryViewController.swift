@@ -249,6 +249,32 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         longPressEnabled = !longPressEnabled
     }
     
+    // MARK: - Show / Hide Menu
+    
+    @IBOutlet weak var veil: UIView!
+    let menuTableVC = MenuTableController()
+    let menuTable = UITableView()
+    
+    @IBAction func menuBtnPressed(_ sender: UIBarButtonItem) {
+        menuTable.delegate = menuTableVC
+        menuTable.dataSource = menuTableVC
+        menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+
+        veil.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+                
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            self.veil.alpha = 0.4
+            self.menuTable.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+        }, completion: nil)
+    }
+    
+    @objc func handleDismiss(){
+        UIView.animate(withDuration: 0.5) {
+            self.veil.alpha = 0
+            self.menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+        }
+    }
+    
     // MARK: - Data manipulation
     
     func saveData() {
