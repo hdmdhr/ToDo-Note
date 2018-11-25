@@ -171,6 +171,27 @@
                             </collectionView>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiE-sK-KUP" userLabel="50%Veil">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fuF-0k-X5c">
+                                        <rect key="frame" x="-80" y="64" width="207" height="672"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MenuCell" id="mqY-Ck-jmq">
+                                                <rect key="frame" x="0.0" y="28" width="207" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mqY-Ck-jmq" id="3Hn-fw-Zdq">
+                                                    <rect key="frame" x="0.0" y="0.0" width="207" height="43.666666666666664"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <connections>
+                                            <outlet property="dataSource" destination="BYZ-38-t0r" id="Ow9-5H-o2Q"/>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="m8W-vs-Txu"/>
+                                        </connections>
+                                    </tableView>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
@@ -189,7 +210,6 @@
                     </view>
                     <navigationItem key="navigationItem" title="Categories" id="r63-Nc-ho4">
                         <barButtonItem key="leftBarButtonItem" image="menu" id="m5G-1c-tT4">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="menuBtnPressed:" destination="BYZ-38-t0r" id="8PN-m0-WZC"/>
                             </connections>
@@ -203,42 +223,16 @@
                     <size key="freeformSize" width="414" height="736"/>
                     <connections>
                         <outlet property="collectionView" destination="J2G-DM-bGw" id="8Cy-WC-krr"/>
+                        <outlet property="menuTable" destination="fuF-0k-X5c" id="CDW-CW-H17"/>
                         <outlet property="navBarBtn" destination="B4d-J2-rag" id="FuP-MI-WwV"/>
                         <outlet property="veil" destination="CiE-sK-KUP" id="bhI-sZ-JND"/>
                         <segue destination="aBZ-xO-cug" kind="show" identifier="ShowItems" id="qAK-0a-oNf"/>
+                        <segue destination="SRE-Pw-qYF" kind="presentation" identifier="ShowTutorial" modalTransitionStyle="flipHorizontal" id="e4S-tc-1fE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1015.9420289855074" y="131.25"/>
-        </scene>
-        <!--Menu Table Controller-->
-        <scene sceneID="lpk-9P-Ske">
-            <objects>
-                <tableViewController id="nzf-Q2-lvL" customClass="MenuTableController" customModule="UICollectionView_Practice" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="X9C-bZ-PGd">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MenuCell" id="Bpm-Cr-50W">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bpm-Cr-50W" id="Xhj-px-ee5">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="nzf-Q2-lvL" id="j0j-s7-cRY"/>
-                            <outlet property="delegate" destination="nzf-Q2-lvL" id="qqs-u4-ug2"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="he5-uy-vby" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1025" y="834"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YI8-pK-l9X">
@@ -365,12 +359,12 @@
                         </connections>
                     </collectionView>
                     <connections>
-                        <segue destination="PTQ-BZ-KRg" kind="show" identifier="ShowCategory" id="il4-lG-adw"/>
+                        <segue destination="PTQ-BZ-KRg" kind="presentation" identifier="ShowCategory" modalTransitionStyle="flipHorizontal" id="il4-lG-adw"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Io-el-eYC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-683" y="132"/>
+            <point key="canvasLocation" x="139" y="-626"/>
         </scene>
         <!--ToDoItems-->
         <scene sceneID="pX0-u5-7cx">
@@ -449,7 +443,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="oo6-NG-nZ1">
-                                <rect key="frame" x="15" y="79" width="384" height="43"/>
+                                <rect key="frame" x="15" y="35" width="384" height="43"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -458,7 +452,7 @@
                                 </connections>
                             </textField>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Add details" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="f6W-VN-rve">
-                                <rect key="frame" x="15" y="137" width="384" height="584"/>
+                                <rect key="frame" x="15" y="93" width="384" height="628"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -497,4 +491,7 @@
         <image name="minus" width="250" height="250"/>
         <image name="plus" width="250" height="250"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="e4S-tc-1fE"/>
+    </inferredMetricsTieBreakers>
 </document>

@@ -16,9 +16,6 @@ import UIKit
 //        clipsToBounds = true
     }
     
-    override func willMove(toSuperview newSuperview: UIView?) {
-    }
-    
     override func setNeedsLayout() {
         super.setNeedsLayout()
         layer.cornerRadius = 0.25 * layer.bounds.width

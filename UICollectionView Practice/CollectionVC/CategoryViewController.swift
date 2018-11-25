@@ -14,6 +14,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var navBarBtn: UIBarButtonItem!
+    @IBOutlet weak var menuTable: UITableView!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -25,6 +26,11 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     }
     
     var categories: [Category] = []
+    let menuOptions = [("Version 1.0", "tool"),
+                       ("Show Tutorial", "book"),
+                       ("Report Bugs", "notification"),
+                       ("Contact Developer", "mail")
+    ]
 
     var longPressEnabled = false {
         didSet{
@@ -45,13 +51,11 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         super.viewDidLoad()
         loadData()
         navBarBtn.title = "Edit"
+        menuTable.tableFooterView = UIView()
         
         // MARK: Add gestures
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPress)
-
-//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
-//        collectionView.addGestureRecognizer(panGesture)
 
         // MARK: Add + button data
         if categories.isEmpty {
@@ -94,7 +98,6 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
-//        cell.backgroundColor = HexColor("9A9A9A", 0.25)
         cell.roundBtn.setImage(nil, for: .normal)
         if categories[indexPath.item].name == "+" {
             cell.roundBtn.setImage(UIImage(named: "add"), for: .normal)
@@ -102,7 +105,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         cell.layer.borderWidth = 1
         cell.layer.borderColor = FlatGray().withAlphaComponent(0.15).cgColor
         cell.roundBtn.setTitle(categories[indexPath.item].name, for: .normal)
-        cell.roundBtn.backgroundColor = HexColor(categories[indexPath.item].colorHex ?? FlatWatermelon().hexValue(), 0.9)
+        cell.roundBtn.backgroundColor = HexColor(categories[indexPath.item].colorHex!, 0.9)
         cell.roundBtn.tintColor = ContrastColorOf(cell.roundBtn.backgroundColor!, returnFlat: true)
         
         if longPressEnabled {
@@ -252,20 +255,20 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     // MARK: - Show / Hide Menu
     
     @IBOutlet weak var veil: UIView!
-    let menuTableVC = MenuTableController()
-    let menuTable = UITableView()
+    var menuIsOpen = false
     
     @IBAction func menuBtnPressed(_ sender: UIBarButtonItem) {
-        menuTable.delegate = menuTableVC
-        menuTable.dataSource = menuTableVC
-        menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
-
-        veil.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
-                
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-            self.veil.alpha = 0.4
-            self.menuTable.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
-        }, completion: nil)
+        if menuIsOpen {
+            handleDismiss()
+        } else {
+            veil.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+        
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+                self.veil.alpha = 0.4
+                self.menuTable.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+            }, completion: nil)
+            menuIsOpen = true
+        }
     }
     
     @objc func handleDismiss(){
@@ -273,6 +276,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             self.veil.alpha = 0
             self.menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
         }
+        menuIsOpen = false
     }
     
     // MARK: - Data manipulation
@@ -298,6 +302,43 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         }
     }
     
+}
+
+// MARK: - Menu Table
+
+extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 3 * ( #imageLiteral(resourceName: "notification").size.height)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return menuOptions.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if tableView == menuTable {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MenuCell")
+            cell?.textLabel?.adjustsFontSizeToFitWidth = true
+            cell?.textLabel?.text = menuOptions[indexPath.row].0
+            cell?.imageView?.image = UIImage(named: menuOptions[indexPath.row].1)
+            return cell ?? UITableViewCell()
+        }
+        return UITableViewCell()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        menuTable.deselectRow(at: indexPath, animated: true)
+        switch menuTable.cellForRow(at: indexPath)!.textLabel?.text {
+        case "Show Tutorial":
+            performSegue(withIdentifier: "ShowTutorial", sender: self)
+        case "Report Bugs", "Contact Developer" :
+            performSegue(withIdentifier: "ShowTutorial", sender: self)
+        default:
+            break
+        }
+        handleDismiss()
+    }
 }
 
 // MARK: - Gesture to Move Cells
