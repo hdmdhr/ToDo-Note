@@ -38,23 +38,15 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
         
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete notes under the selected item", preferredStyle: .alert)
-            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-                self.updateModel(at: indexPath)
-            })
-            
-            alert.addAction(deleteAction)
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            self.present(alert, animated: true, completion: nil)
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { _, indexPath in
+            self.updateModel(at: indexPath)
         }
         
         let failAction = SwipeAction(style: .default, title: "Failed") { (_, indexPath) in
             self.failingItemAt(indexPath)
         }
         
-        let changeColorAction = SwipeAction(style: .default, title: "Change") { action, indexPath in
+        let changeColorAction = SwipeAction(style: .default, title: "Change") { _, indexPath in
             self.changeColor(at: indexPath)  // Change color and update database
         }
         

@@ -30,12 +30,13 @@ class ToDoVC: SwipeTableViewController {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
             navigationItem.title = category.name
+            tableView.backgroundColor = UIColor(hexString: category.colorHex!)?.darken(byPercentage: 0.15)
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         dragger = TableViewDragger(tableView: tableView)
         dragger.availableHorizontalScroll = true
         dragger.dataSource = self
@@ -44,8 +45,7 @@ class ToDoVC: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        tableView.backgroundColor = UIColor(hexString: category.colorHex!)
-
+        
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
 //        guard let barColor = UIColor(hexString: category.colorHex) else { fatalError() }
         navBar.barTintColor = UIColor(hexString: category.colorHex!)
@@ -71,11 +71,11 @@ class ToDoVC: SwipeTableViewController {
         case "Failed":
             headerView.backgroundColor = FlatGray()
         default:
-            break
+            headerView.backgroundColor = FlatBlue()
         }
         
         let label = UILabel()
-        label.text = sortedItems[section].items.first?.done
+        label.text = sortedItems[section].items.first?.done ?? "ToDo"
         label.textColor = FlatWhite()
         label.font = UIFont.systemFont(ofSize: 18)
         label.frame = CGRect(x: 10, y: 5, width: 80, height: 30)
@@ -92,13 +92,13 @@ class ToDoVC: SwipeTableViewController {
         button.frame = CGRect(x: UIScreen.main.bounds.width - 80, y: 5, width: 80, height: 30)
         button.titleLabel?.font = UIFont.italicSystemFont(ofSize: 12)
         button.tag = section
-        button.addTarget(self, action: #selector(expandCollaspseBtnPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(showHideBtnPressed), for: .touchUpInside)
         headerView.addSubview(button)
 
         return headerView
     }
     
-    @objc func expandCollaspseBtnPressed(button: UIButton){
+    @objc func showHideBtnPressed(button: UIButton){
         let section = button.tag
         
         var indexPaths = [IndexPath]()
@@ -141,7 +141,22 @@ class ToDoVC: SwipeTableViewController {
 
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return sortedItems.count
+        if sortedItems.isEmpty {
+            let noDataLabel: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height))
+            tableView.backgroundView  = noDataLabel
+            tableView.backgroundColor = HexColor(category.colorHex!, 0.85)
+            noDataLabel.numberOfLines = 0
+            noDataLabel.lineBreakMode = .byWordWrapping
+            noDataLabel.font = UIFont.boldSystemFont(ofSize: 30)
+            noDataLabel.text          = "No to do item currently\nTap + to create a new one"
+            noDataLabel.textColor     = ContrastColorOf(tableView.backgroundColor!, returnFlat: true)
+            noDataLabel.textAlignment = .center
+            
+            return 0
+        } else {
+            tableView.backgroundView = nil
+            return sortedItems.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -208,7 +223,13 @@ class ToDoVC: SwipeTableViewController {
             newItem.parentCategory = self.category
             
             self.saveItems()
-            self.loadItemsUnderCurrentCategory()
+            
+            if self.sortedItems.first?.items.first?.done != "ToDo" {  // 如果没有ToDo Section，先插入Section，再插入Row
+                self.sortedItems.insert(ExpandableItems(items: [], isExpanded: true), at: 0)
+                self.tableView.insertSections(IndexSet([0]), with: .left)
+            }
+            self.sortedItems[0].items.append(newItem)
+            self.tableView.insertRows(at: [IndexPath(row: self.sortedItems[0].items.count - 1, section: 0)], with: .left)
         }
         
         alert.addTextField { (alertTextField) in
@@ -227,23 +248,69 @@ class ToDoVC: SwipeTableViewController {
     // MARK:  Delete Data by Swipe to Left
     
     override func updateModel(at indexPath: IndexPath) {
+        if sortedItems[indexPath.section].items[indexPath.row].note != nil {
+            let alert = UIAlertController(title: "Are you sure ?", message: "Will also delete notes and photos under selected item", preferredStyle: .alert)
+            let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
+                self.deleteRowWithIndexPath(indexPath)
+            })
+            
+            alert.addAction(deleteAction)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            deleteRowWithIndexPath(indexPath)
+        }
+    }
+    
+    func deleteRowWithIndexPath(_ indexPath: IndexPath) {
         context.delete(sortedItems[indexPath.section].items[indexPath.row])
-        sortedItems[indexPath.section].items.remove(at: indexPath.row)
         saveItems()
-        loadItemsUnderCurrentCategory()
+
+        sortedItems[indexPath.section].items.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .left)
+        if sortedItems[indexPath.section].items.isEmpty {  // if section is empty, also delete section
+            sortedItems.remove(at: indexPath.section)
+            tableView.deleteSections(IndexSet([indexPath.section]), with: .left)
+        }
     }
     
     // MARK: Mark Item as Failed
     
     override func failingItemAt(_ indexPath: IndexPath) {
+
         if sortedItems[indexPath.section].items[indexPath.row].done == "Failed" {
             sortedItems[indexPath.section].items[indexPath.row].done = "ToDo"
         } else {
             sortedItems[indexPath.section].items[indexPath.row].done = "Failed"
         }
         saveItems()
-        tableView.reloadRows(at: [indexPath], with: .right)
         loadItemsUnderCurrentCategory()
+        
+        /*
+         if sortedItems.last?.items.first?.done == "Failed" {
+         // Expand last section
+         if !sortedItems.last!.isExpanded {
+         let button = UIButton()
+         button.tag = sortedItems.count - 1
+         showHideBtnPressed(button: button)
+         }
+         } else {
+         // Create last section
+         sortedItems.append(ExpandableItems(items: [], isExpanded: true))
+         tableView.insertSections(IndexSet([sortedItems.count]), with: .left)
+         }
+         // Move to last section's last row
+         let movingItem = sortedItems[indexPath.section].items.remove(at: indexPath.row)
+         sortedItems[sortedItems.count - 1].items.insert(movingItem, at: max(sortedItems.last!.items.count - 1, 0))
+         let destinationIndex = IndexPath(row: self.sortedItems.last!.items.count - 1, section: self.sortedItems.count - 1)
+         
+         UIView.transition(with: tableView, duration: 1, options: .curveEaseInOut, animations: {
+         self.tableView.moveRow(at: indexPath, to: destinationIndex)
+         }, completion: nil)
+         
+         tableView.scrollToRow(at: destinationIndex, at: .bottom, animated: true)
+         */
     }
     
     // MARK:  Change Color
@@ -278,9 +345,7 @@ class ToDoVC: SwipeTableViewController {
         }
         
         saveItems()
-        
         loadItemsUnderCurrentCategory()
-
     }
     
     
@@ -340,7 +405,6 @@ class ToDoVC: SwipeTableViewController {
         UIView.transition(with: tableView, duration: 1, options: .curveEaseInOut, animations: {
             self.tableView.reloadData()
         }, completion: nil)
-//            tableView.reloadData()
         }
 
 }
@@ -352,6 +416,7 @@ class ToDoVC: SwipeTableViewController {
 extension ToDoVC: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
         searchByTitle()
     }
     
@@ -369,6 +434,7 @@ extension ToDoVC: UISearchBarDelegate {
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         loadItemsUnderCurrentCategory(with: request, predicate)
+        tableView.reloadData()
     }
 }
 

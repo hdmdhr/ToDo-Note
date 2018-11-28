@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import ChameleonFramework
+import MessageUI
 
 class CategoryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -306,7 +307,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
 
 // MARK: - Menu Table
 
-extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
+extension CategoryViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 3 * ( #imageLiteral(resourceName: "notification").size.height)
@@ -319,6 +320,8 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == menuTable {
             let cell = tableView.dequeueReusableCell(withIdentifier: "MenuCell")
+            cell?.textLabel?.font = UIFont.systemFont(ofSize: 14)
+            cell?.textLabel?.textAlignment = .center
             cell?.textLabel?.adjustsFontSizeToFitWidth = true
             cell?.textLabel?.text = menuOptions[indexPath.row].0
             cell?.imageView?.image = UIImage(named: menuOptions[indexPath.row].1)
@@ -333,11 +336,37 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
         case "Show Tutorial":
             performSegue(withIdentifier: "ShowTutorial", sender: self)
         case "Report Bugs", "Contact Developer" :
-            performSegue(withIdentifier: "ShowTutorial", sender: self)
+            sendEmail(with: indexPath)
         default:
             break
         }
         handleDismiss()
+    }
+    
+    func sendEmail(with indexPath: IndexPath){
+        let mailComposerVC = MFMailComposeViewController()
+        mailComposerVC.mailComposeDelegate = self
+        
+        mailComposerVC.setToRecipients(["hdmdhr@gmail.com"])
+        mailComposerVC.setSubject(menuTable.cellForRow(at: indexPath)!.textLabel?.text ?? "Hello")
+        mailComposerVC.setMessageBody("Hi Dear Developer, ", isHTML: false)
+        
+        if MFMailComposeViewController.canSendMail() {
+            self.present(mailComposerVC, animated: true, completion: nil)
+        } else {
+            showMailError()
+        }
+    }
+    
+    func showMailError() {
+        let sendMailErrorAlert = UIAlertController(title: "Could not send email", message: "Your device could not send email", preferredStyle: .alert)
+        let dismiss = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+        sendMailErrorAlert.addAction(dismiss)
+        self.present(sendMailErrorAlert, animated: true, completion: nil)
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -346,7 +375,7 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
 extension CategoryViewController {
     
     //    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-    //        return longPressEnabled ? true : false
+    //        return longPressEnabled
     //    }  --- No Longer Needed Because of The Following Methond ---
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
