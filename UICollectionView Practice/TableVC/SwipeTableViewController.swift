@@ -14,7 +14,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = 3 * ( #imageLiteral(resourceName: "color-wheel").size.height)
+        tableView.rowHeight = 2.5 * ( #imageLiteral(resourceName: "color-wheel").size.height)
         tableView.sectionFooterHeight = 0
         tableView.separatorStyle = .none
     }

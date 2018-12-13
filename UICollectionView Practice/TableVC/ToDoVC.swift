@@ -30,7 +30,6 @@ class ToDoVC: SwipeTableViewController {
         didSet{
             loadItemsUnderCurrentCategory()  // load all the items under current category
             navigationItem.title = category.name
-            tableView.backgroundColor = UIColor(hexString: category.colorHex!)?.darken(byPercentage: 0.15)
         }
     }
 
@@ -45,7 +44,7 @@ class ToDoVC: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        tableView.reloadData()
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
 //        guard let barColor = UIColor(hexString: category.colorHex) else { fatalError() }
         navBar.barTintColor = UIColor(hexString: category.colorHex!)
@@ -53,12 +52,14 @@ class ToDoVC: SwipeTableViewController {
         navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : navBar.tintColor]
         
         searchBar.barTintColor = HexColor(category.colorHex!)
+        tableView.backgroundColor = UIColor(hexString: category.colorHex!)?.darken(byPercentage: 0.15)
     }
+
     
     // MARK: - Table Header Appearance
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+        return 35
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -264,10 +265,16 @@ class ToDoVC: SwipeTableViewController {
     }
     
     func deleteRowWithIndexPath(_ indexPath: IndexPath) {
-        context.delete(sortedItems[indexPath.section].items[indexPath.row])
+        let itemToDelete = sortedItems[indexPath.section].items[indexPath.row]
+//        let images = itemToDelete.savedImages?.allObjects as! [Image]
+//        images.forEach { (image) in
+//            context.delete(image)
+//        }
+        context.delete(itemToDelete)
         saveItems()
 
         sortedItems[indexPath.section].items.remove(at: indexPath.row)
+        
         tableView.deleteRows(at: [indexPath], with: .left)
         if sortedItems[indexPath.section].items.isEmpty {  // if section is empty, also delete section
             sortedItems.remove(at: indexPath.section)

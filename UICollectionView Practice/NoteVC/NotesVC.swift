@@ -11,12 +11,11 @@ import CoreData
 import AVFoundation
 import Photos
 
-class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
 
     var currentItem: ToDoItems! {
         didSet{
             loadImagesUnderCurrentItem()
-            // TODO: also load notes under current item
         }
     }
     var images: [Image] = []
@@ -49,31 +48,6 @@ class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIColl
         longPressEnabled = false
     }
     
-    @objc func cameraBtnPressed(){
-
-        let cameraMediaType = AVMediaType.video
-        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: cameraMediaType)
-        
-        switch cameraAuthorizationStatus {
-        case .authorized:
-            imagePicker.sourceType = .camera
-            showImagePicker()
-        case .denied: break
-        case .restricted: break
-        case .notDetermined:
-            // Prompting user for the permission to use the camera.
-            AVCaptureDevice.requestAccess(for: cameraMediaType) { granted in
-                if granted {
-                    self.showImagePicker()
-                } else {
-                    print("Denied access to \(cameraMediaType)")
-                }
-            }
-        }
-        
-    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         titleTextField.text = currentItem.title
@@ -99,7 +73,11 @@ class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIColl
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         view.gestureRecognizers?.forEach(view.removeGestureRecognizer)
-        // TODO: - 将修改的title保存
+
+        if textField.text != "Title" {
+            currentItem.title = textField.text
+            saveData()
+        }
     }
 
     
@@ -120,56 +98,11 @@ class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIColl
         }
         textView.resignFirstResponder()
         view.gestureRecognizers?.forEach(view.removeGestureRecognizer)
-        // TODO: - 将修改好的note保存至当前item
-    }
-
-    // MARK: - Collection View Delegate Methods
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCell
-        if cell.pictureView.image == UIImage(named: "plus") {
-            
-            imagePicker.sourceType = .photoLibrary
-            imagePicker.allowsEditing = true
-            
-            let libraryAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
-            
-            switch libraryAuthorizationStatus {
-            case .denied: break
-            case .authorized:
-                showImagePicker()
-            case .restricted: break
-            case .notDetermined:
-                // Prompting user for the permission to use the photo library.
-                PHPhotoLibrary.requestAuthorization { (newStatus) in
-                    if newStatus == .authorized {
-                        self.showImagePicker()
-                    } else {
-                        print("Denied access")
-                    }
-                }
-            }
+        if textView.text !=  "Add details here..." {
+            currentItem.note = textView.text
+            saveData()
         }
-    }
-    
-    
-    // MARK: - Picture Collection View Datasource Methods
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if images.isEmpty {
-            return 1
-        } else {
-            return images.count + 1
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! PhotoCell
-        cell.pictureView.image = UIImage(named: "plus")
-        // TODO: set image to loaded images array
-        
-        return cell
     }
     
     // MARK: - Data Manipulation
@@ -200,11 +133,25 @@ class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIColl
     
     @IBAction func deleteBtnPressed(_ sender: UIButton) {
         print("Delete picture button pressed")
+        let hitPoint = sender.convert(CGPoint.zero, to: collectionView)
+        guard let hitIndex = collectionView.indexPathForItem(at: hitPoint) else {
+            print("cannot find index for the point you hit")
+            return
+        }
+        
+        context.delete(images[hitIndex.item])
+        saveData()
+        
+        images.remove(at: hitIndex.item)
+        
+        collectionView.deleteItems(at: [hitIndex])
     }
     
     
-    // MARK: - Long Press Gesture to Enable Animation
+    // MARK: - Long Press Gesture to Enable Animation and Move Cells
 
+    // TODO: Move Cells
+    
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer){
         switch gesture.state {
         case .began:
@@ -224,9 +171,88 @@ class NotesVC: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIColl
     }
 }
 
+// MARK: - Picture Collection View
+
+extension NotesVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    // MARK: Picture Collection View Datasource Methods
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if images.isEmpty {
+            return 1
+        } else {
+            return images.count + 1
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! PhotoCell
+        cell.pictureView.image = UIImage(named: "plus")
+        // TODO: set image to loaded images array
+        
+        return cell
+    }
+    
+    // MARK: Collection View Delegate Methods
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+        if cell.pictureView.image == UIImage(named: "plus") {
+            
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = true
+            
+            let libraryAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
+            
+            switch libraryAuthorizationStatus {
+            case .denied: break
+            case .authorized:
+                showImagePicker()
+            case .restricted: break
+            case .notDetermined:
+                // Prompting user for the permission to use the photo library.
+                PHPhotoLibrary.requestAuthorization { (newStatus) in
+                    if newStatus == .authorized {
+                        self.showImagePicker()
+                    } else {
+                        print("Denied access")
+                    }
+                }
+            }
+        }
+    }
+}
+
 extension NotesVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // TODO: Configure and show image picker
+    @objc func cameraBtnPressed(){
+        
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            print("camera not supported by this device")
+            return
+        }
+        
+        let cameraMediaType = AVMediaType.video
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: cameraMediaType)
+        
+        switch cameraAuthorizationStatus {
+        case .authorized:
+            imagePicker.sourceType = .camera
+            showImagePicker()
+        case .denied: break
+        case .restricted: break
+        case .notDetermined:
+            // Prompting user for the permission to use the camera.
+            AVCaptureDevice.requestAccess(for: cameraMediaType) { granted in
+                if granted {
+                    self.showImagePicker()
+                } else {
+                    print("Denied access to \(cameraMediaType)")
+                }
+            }
+        }
+    }
     
     func showImagePicker() {
         self.present(imagePicker, animated: true, completion: nil)
@@ -234,9 +260,15 @@ extension NotesVC: UIImagePickerControllerDelegate, UINavigationControllerDelega
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         imagePicker.dismiss(animated: true, completion: nil)
-        print("User did pick an image.")
-        if let userEditedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            // TODO: 1. show image in the selected cell, 2. save the image
+        
+        var userPickedImage: UIImage?
+        if picker.sourceType == .camera {
+            userPickedImage = info[.originalImage] as? UIImage
+        } else if picker.sourceType == .photoLibrary {
+            userPickedImage = info[.editedImage] as? UIImage
         }
+        guard userPickedImage != nil else { fatalError("User picked image is nil") }
+        
+        // TODO: 1.Show picked image in picture collection  2. Convert image to NSData   3. Save the data
     }
 }

@@ -15,6 +15,8 @@ class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var plusButton: UIButton!
     @IBOutlet weak var minusButton: UIButton!
     
+    let placeholderImage = UIImage(named: "plus")
+    
     var isAnimated = false
     
     func startAnimate() {
@@ -32,9 +34,10 @@ class PhotoCell: UICollectionViewCell {
         
         layer.add(shakeAnimation, forKey: "animate")
     
-        deleteBtn.isHidden = false
-        plusButton.isHidden = false
-        minusButton.isHidden = false
+        deleteBtn.isHidden = (pictureView.image == placeholderImage)
+        
+            plusButton.isHidden = false
+            minusButton.isHidden = false
         
         isAnimated = true
     }

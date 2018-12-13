@@ -57,17 +57,11 @@ class CollectionViewCell: UICollectionViewCell {
         
         layer.add(shakeAnimation, forKey: "animate")
         
-        if roundBtn.currentTitle != "+" {
-            deleteBtn.isHidden = false
-            changeColorBtn.isHidden = false
-            plusBtn.isHidden = false
-            minusBtn.isHidden = false
-        } else {
-            deleteBtn.isHidden = true
-            changeColorBtn.isHidden = true
-            plusBtn.isHidden = false
-            minusBtn.isHidden = false
-        }
+        plusBtn.isHidden = false
+        minusBtn.isHidden = false
+        deleteBtn.isHidden = roundBtn.currentTitle == "+"  // if this is + cell, don't show delete button
+        changeColorBtn.isHidden = roundBtn.currentTitle == "+"
+        
         isAnimate = true
     }
     

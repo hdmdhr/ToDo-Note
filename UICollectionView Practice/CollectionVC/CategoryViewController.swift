@@ -203,16 +203,17 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     }
     
     private func deleteDataWithHitIndex(_ hitIndex: IndexPath) {
-        if categories[hitIndex.row].name != "+" {
-            let itemsUnderCategory = categories[hitIndex.row].itemsToDo?.allObjects as! [ToDoItems]
-            for item in itemsUnderCategory {
-                context.delete(item)  // delete all items under category first
-            }
-            context.delete(categories[hitIndex.row])
-            categories.remove(at: hitIndex.row)
-            saveData()
-            collectionView.deleteItems(at: [hitIndex])
-        }
+//            let itemsUnderCategory = categories[hitIndex.row].itemsToDo?.allObjects as! [ToDoItems]
+//            itemsUnderCategory.forEach { (item) in
+//                context.delete(item)
+//            }
+            
+        context.delete(categories[hitIndex.row])
+        saveData()
+        
+        categories.remove(at: hitIndex.row)
+        
+        collectionView.deleteItems(at: [hitIndex])
     }
     
     @IBAction func changeColorBtnPressed(_ sender: UIButton) {
@@ -264,18 +265,18 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         } else {
             veil.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
         
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut, animations: {
                 self.veil.alpha = 0.4
-                self.menuTable.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+                self.menuTable.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width / 2.4, height: UIScreen.main.bounds.height)
             }, completion: nil)
             menuIsOpen = true
         }
     }
     
     @objc func handleDismiss(){
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.4) {
             self.veil.alpha = 0
-            self.menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
+            self.menuTable.frame = CGRect(x: -UIScreen.main.bounds.width / 2.4, y: 0, width: UIScreen.main.bounds.width / 2.4, height: UIScreen.main.bounds.height)
         }
         menuIsOpen = false
     }
@@ -310,7 +311,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
 extension CategoryViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 3 * ( #imageLiteral(resourceName: "notification").size.height)
+        return 2.5 * ( #imageLiteral(resourceName: "notification").size.height)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
