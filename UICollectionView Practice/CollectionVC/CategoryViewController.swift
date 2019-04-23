@@ -22,7 +22,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
     var sizeSetter = UserDefaults.standard.integer(forKey: "categorySize") {
         didSet{
             if sizeSetter > 4 { sizeSetter = 4 } else if sizeSetter < 2 { sizeSetter = 2 }
-            UserDefaults.standard.set(sizeSetter, forKey: "categorySize")  // save category size
+            UserDefaults.standard.set(sizeSetter, forKey: "categorySize")  // save category size to UserDefault
         }
     }
     
@@ -83,6 +83,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
 //        print("item size: \(layout.itemSize)")
     }
     
+    // MARK: adjust navBar color before view appear
     override func viewWillAppear(_ animated: Bool) {
         guard let navBar = navigationController?.navigationBar else { fatalError("No nav controller") }
         navBar.tintColor = ContrastColorOf(navBar.barTintColor!, returnFlat: true)
@@ -156,6 +157,16 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
         let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
+            // check if the category already exist or user input is empty
+            for cate in self.categories{
+                if cate.name == textField.text || textField.text == ""{
+                    self.view.shake()
+                    alert.textFields?.first?.text = ""
+                    alert.textFields?.first?.placeholder = "Repeated category name, try again"
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                }
+            }
             
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text
@@ -238,6 +249,7 @@ class CategoryViewController: UIViewController, UICollectionViewDataSource, UICo
             sizeSetter -= 1
             collectionView.collectionViewLayout.invalidateLayout()
         case 3:
+            // shrink
             sizeSetter += 1
             collectionView.collectionViewLayout.invalidateLayout()
         default:

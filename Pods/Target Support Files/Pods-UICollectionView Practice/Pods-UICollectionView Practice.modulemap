@@ -1,0 +1,6 @@
+framework module Pods_UICollectionView_Practice {
+  umbrella header "Pods-UICollectionView Practice-umbrella.h"
+
+  export *
+  module * { export * }
+}
