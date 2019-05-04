@@ -219,6 +219,8 @@ extension NotesVC: UICollectionViewDelegate, UICollectionViewDataSource {
                         print("Denied access")
                     }
                 }
+            @unknown default:
+                fatalError("Something wrong with library authorization.")
             }
         }
     }
@@ -251,6 +253,8 @@ extension NotesVC: UIImagePickerControllerDelegate, UINavigationControllerDelega
                     print("Denied access to \(cameraMediaType)")
                 }
             }
+        @unknown default:
+            fatalError("Something wrong with camera authorization.")
         }
     }
     
