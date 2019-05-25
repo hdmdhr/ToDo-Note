@@ -9,7 +9,7 @@
 
 
 <h1></h1>
-<h6 align="center"> This project is aimed to be a diary-like app, recording your daily achievements. </h6>
+<h6 align="center"> This is aimed to be a diary-like app, recording your daily achievements. </h6>
 
 <h1></h1>
 
